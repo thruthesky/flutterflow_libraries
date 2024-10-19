@@ -25,6 +25,7 @@ class UserAvatar extends StatefulWidget {
 
   final double? width;
   final double? height;
+
   final String uid;
   final double? radius;
 
