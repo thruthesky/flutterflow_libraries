@@ -27,7 +27,13 @@
   - [Functions](#functions)
     - [isAnonymous](#isanonymous)
   - [Blocking User](#blocking-user)
-    - [Unblocking User](#unblocking-user)
+    - [Database structure for Blocking](#database-structure-for-blocking)
+    - [blocking a user](#blocking-a-user)
+    - [Un-blocking a User](#un-blocking-a-user)
+    - [Listing the blocked users](#listing-the-blocked-users)
+  - [Widgets](#widgets)
+    - [BlockedUser](#blockeduser)
+  - [Security](#security)
 
 
 ## Overview
@@ -171,19 +177,56 @@ See the custom actions page
 
 ## Blocking User
 
-- To block a user, you can call `blockUser` custom action to block a user. Or you can simply create your own Backend Query to save the other user's uid into the `blockedUsers` array field in your user document.
+### Database structure for Blocking
 
-- The `blockUser` custom action will save the user's uid into the `blockedUsers` array field. And the `blockedUsers` will be mirrored to `/blocked-users/<my-uid>/` by the `_mirrorUserData` method in the super library. So, you will simply save the other user uid into `blockedUsers` field of your own document.
+- `/users/<uid> { blockedUsers: [ ... ] }`: The uid of other users will be saved in the login user's Firestore document.
+  - When the user A blocks the other user B, B's uid is saved in `/users/A/{ blockedUsers: [ B ] }`.
+  - It's the string of uid. Not the reference of the user.
 
+### blocking a user
 
-### Unblocking User
+- To block a user, you can call `blockUser` custom action to block a user.
+  - Or you can simply create your own Backend Query to save the other user's uid into the `blockedUsers` array field in your user document.
 
-- Super library does not provide any method to detect if a user is blocked by you or now because it's so easy. And it will be more complicated with super library.
+- The `blockUser` custom action will save the user's uid into the `blockedUsers` array field.
+  - And the `blockedUsers` field will be mirrored to `/blocked-users/<my-uid>/` by the `_mirrorUserData` method in the super library automatically.
+
+### Un-blocking a User
+
+- Super library does not provide any method to detect if a user is blocked by the login user or not to make it simple.
+  - It's too easy to provide a helper logic.
 - To know if a user is blocked or not, simply do the way how the FlutterFlow goes
-  - The `blockedUsers` is in your document. Meaning, it will be automatically synced with the `Authenticated User` variable in FlutterFlow. So, you don't need to query to the Firestore to know if someone is blocked by you or not.
-  - To display if the user is blocked or not, check if the user's uid is in the `blockedUsers` of `Authenticated User`. And if the uid exists, then the user is blocked and you can unblock the user.
+  - The `blockedUsers` is in your document. Meaning, it will be automatically synced with the `Authenticated User` variable in FlutterFlow.
+    - So, you don't need to query to the Firestore to know if someone is blocked by you or not.
+  - To display if the user is blocked or not, check if the user's uid is in the `blockedUsers` of `Authenticated User`.
+    - And if the uid exists, then the user is blocked and you can unblock the user.
     - Again super library does not provide any method for this. You can simply query the Firestore to remove the other user's uid from `blockedUsers` array field.
-      - And the super library will automatically remove the user's uid from the Realtime Database.
+- The super library will automatically remove the user's uid from the Realtime Database if the uid is removed from the `blockedUsers` array field the user's document.
+
+
+### Listing the blocked users
+
+- Simply list the users of `blockedUsers` in the user's document.
+- And remove the uid of the user from the `blockedUsers` in the user's document to rmeove the user from the blocked list.
+
+
+
+## Widgets
+
+### BlockedUser
+
+This widget listens the blocked users in th Realtime Database and build the UI based on the status of the block.
+This widget is usefuly on custom coding. You may not use it in the FlutterFlow canvas directly.
+
+
+
+
+
+## Security
+
+- We recommend locking the document to prevent unauthorized access. Instead, use the `UserAvatar` and `DisplayName` widgets to display user information.
+  - This is because the user document in Firestore may contain private information such as phone numbers or email addresses.
+  - And the `UserAvatar` and `DisplayName` access data from the Realtime Database where there should be no private information.
 
 
 

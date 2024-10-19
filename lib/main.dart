@@ -13,6 +13,7 @@ import 'package:super_example/firebase_options.dart';
 import 'package:super_example/screens/chat/open_chat_room.list.screen.dart';
 import 'package:super_example/screens/common_safe_area/common_safe_area.screen.dart';
 import 'package:super_example/screens/site_preview/site_preview.screen.dart';
+import 'package:super_example/screens/user/block_user_list.screen.dart';
 import 'package:super_example/screens/user/custom.user_list_view.screen.dart';
 import 'package:super_example/screens/user/custom_component.user_list_view.screen.dart';
 import 'package:super_example/screens/user/horizontal.custom_component.user_list_view.screen.dart';
@@ -274,34 +275,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   //   radius: 24,
                   // ),
 
-                  CircularProgressIndicator.adaptive(
-                    strokeWidth: 4,
+                  ElevatedButton(
+                    onPressed: () => showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => BlockUserListScreen()),
+                    child: Text("Show blocked Users"),
                   ),
-                  const SizedBox(height: 20),
-
-                  common.CircularProgressIndicator(),
-
-                  const SizedBox(height: 20),
-
-                  FutureBuilder(
-                      future: packageInfo(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return Column(
-                            children: [
-                              Text('Package Info: ${snapshot.data}'),
-                              const SizedBox(height: 20),
-                              if (snapshot.data['version'] != null)
-                                Text('Version: ${snapshot.data['version']}'),
-                              if (snapshot.data['buildNumber'] != null)
-                                Text(
-                                    'Build Number: ${snapshot.data['buildNumber']}'),
-                            ],
-                          );
-                        }
-                        return const CircularProgressIndicator();
-                      }),
-
                   ElevatedButton(
                     onPressed: () async {
                       final String id = 'id${Random().nextInt(1000) + 9999}';

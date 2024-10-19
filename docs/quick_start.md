@@ -23,7 +23,6 @@ Future initApp() async {
 }
 ```
 
-
 If you are using Dev Environment variable, you can initialize it like below;
 
 ```dart
@@ -31,6 +30,9 @@ If you are using Dev Environment variable, you can initialize it like below;
     getDatabaseUrl: () => FFDevEnvironmentValues().databaseURL,
   );
 ```
+
+Note: The `getDatabaseUrl` function is optional and only required for the web platform. For Android and iOS, the `databaseURL` is set by FlutterFlow in the `google-service.json` and `GoogleService-Info.plist` files.
+
 
 ## Explanation
 

@@ -12,6 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:rxdart/rxdart.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
@@ -73,63 +75,6 @@ DatabaseReference userRef(String uid) => databaseUserRef(uid);
 DatabaseReference get myRef => userRef(myUid);
 
 /// EO Helpers -------------------------------------------------------------------------------------
-
-/// load site preview from the url
-///
-/// [text] is a text that contains the url.
-///
-/// It throws exception if it fails to get the site preview.
-///
-/// It returns null if it fails to get the site preview.
-///
-/// It returns the site preview data if it successfully gets the site preview.
-/// But the fields might be null if the site preview data is not found.
-Future<SitePreviewData?> loadSitePreview({
-  required String text,
-}) async {
-  // Get the first url of in the text
-  final RegExp urlRegex = RegExp(r'https?:\/\/\S+');
-  final Match? match = urlRegex.firstMatch(text);
-  final String? url = match?.group(0);
-  if (url == null) {
-    return null;
-  }
-
-  // Get the data from the url (internet)
-  final dio = Dio();
-  Response response;
-  try {
-    response = await dio.get(url);
-  } catch (e) {
-    dog('dio.get($url) Error: $e');
-    throw SuperLibraryException(
-        'load-site-preview/get-failed', 'Failed to get the site preview: $e');
-  }
-  dynamic res = response.data;
-  if (res == null) {
-    throw SuperLibraryException('load-site-preview/response-is-empty',
-        'Result from dio.get($url) is null');
-  }
-  String html = res.toString();
-
-  final Document doc = parse(html);
-
-  String? title =
-      getSitePreviewOGTag(doc, 'og:title') ?? getSitePreviewTag(doc, 'title');
-  String? description = getSitePreviewOGTag(doc, 'og:description') ??
-      getSitePreviewMeta(doc, 'description');
-  String? imageUrl = getSitePreviewOGTag(doc, 'og:image');
-  String? siteName = getSitePreviewOGTag(doc, 'og:site_name') ??
-      getSitePreviewTag(doc, 'title');
-
-  return SitePreviewData(
-    url: url,
-    title: title,
-    description: description,
-    imageUrl: imageUrl,
-    siteName: siteName,
-  );
-}
 
 /// AuthStateChanges
 ///
@@ -1318,6 +1263,63 @@ String? getSitePreviewTag(Document document, String tag) {
   return null;
 }
 
+/// load site preview from the url
+///
+/// [text] is a text that contains the url.
+///
+/// It throws exception if it fails to get the site preview.
+///
+/// It returns null if it fails to get the site preview.
+///
+/// It returns the site preview data if it successfully gets the site preview.
+/// But the fields might be null if the site preview data is not found.
+Future<SitePreviewData?> loadSitePreview({
+  required String text,
+}) async {
+  // Get the first url of in the text
+  final RegExp urlRegex = RegExp(r'https?:\/\/\S+');
+  final Match? match = urlRegex.firstMatch(text);
+  final String? url = match?.group(0);
+  if (url == null) {
+    return null;
+  }
+
+  // Get the data from the url (internet)
+  final dio = Dio();
+  Response response;
+  try {
+    response = await dio.get(url);
+  } catch (e) {
+    dog('dio.get($url) Error: $e');
+    throw SuperLibraryException(
+        'load-site-preview/get-failed', 'Failed to get the site preview: $e');
+  }
+  dynamic res = response.data;
+  if (res == null) {
+    throw SuperLibraryException('load-site-preview/response-is-empty',
+        'Result from dio.get($url) is null');
+  }
+  String html = res.toString();
+
+  final Document doc = parse(html);
+
+  String? title =
+      getSitePreviewOGTag(doc, 'og:title') ?? getSitePreviewTag(doc, 'title');
+  String? description = getSitePreviewOGTag(doc, 'og:description') ??
+      getSitePreviewMeta(doc, 'description');
+  String? imageUrl = getSitePreviewOGTag(doc, 'og:image');
+  String? siteName = getSitePreviewOGTag(doc, 'og:site_name') ??
+      getSitePreviewTag(doc, 'title');
+
+  return SitePreviewData(
+    url: url,
+    title: title,
+    description: description,
+    imageUrl: imageUrl,
+    siteName: siteName,
+  );
+}
+
 /// Memory
 ///
 /// A static memory class to store data in memory
@@ -1339,6 +1341,47 @@ class Memory {
 
   static void set<T>(String key, T value) {
     _data[key] = value;
+  }
+}
+
+/// Re-build the widget if my document in Firestore changes;
+///
+/// Not that this widget does not listen to the user's document `/users/<uid>`.
+/// It listens to the [UserService.instance.changes]. There is no extra access
+/// to the Firestore.
+///
+/// If the user's document in Firestore changes, [UserService.instance.changes]
+/// will be triggered. And this widget will be re-built.
+///
+/// It is useful to re-build the widget if the user's document in Firestore changes.
+///
+/// If the user didn't login, or is in the middle of logging in, or the user's
+/// document does not exist, the [User] in the builder parameter can be null.
+///
+/// If the user logs out or changes the account, the [User] in the builder
+/// parameter will be null.
+///
+/// To reduce the flickering, it uses the initialData from the
+/// [UserService.instance._userData].
+///
+class MyDoc extends StatelessWidget {
+  const MyDoc({super.key, required this.builder});
+  final Widget Function(Map<String, dynamic>?) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>>(
+      initialData: UserService.instance._userData,
+      stream: UserService.instance.changes,
+      builder: (_, snapshot) {
+        if (snapshot.hasError) return Text(snapshot.error.toString());
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            snapshot.hasData == false) {
+          return const SizedBox.shrink();
+        }
+        return builder(snapshot.data);
+      },
+    );
   }
 }
 
@@ -1450,7 +1493,7 @@ class SuperLibrary {
   SuperLibrary._();
 
   String? databaseURL;
-  late final Function getDatabaseUrl;
+  Function? getDatabaseUrl;
   FirebaseDatabase? _database;
 
   bool initialized = false;
@@ -1458,10 +1501,10 @@ class SuperLibrary {
   bool debug = false;
 
   init({
-    required Function getDatabaseUrl,
+    Function? getDatabaseUrl,
     debug = true,
   }) {
-    this.getDatabaseUrl = getDatabaseUrl;
+    this.getDatabaseUrl = getDatabaseUrl ?? () => null;
     this.debug = debug;
 
     initialized = true;
@@ -1473,15 +1516,18 @@ class SuperLibrary {
       throw Exception('SuperLibrary is not initialized');
     }
 
-    databaseURL ??= getDatabaseUrl();
-
-    if (databaseURL == null) {
-      throw Exception('SuperLibrary.databaseURL is null');
+    /// If it's web, then it requires the databaseURL. For mobile app, it does
+    /// not require the databaseURL. The databaseURL is automatically set by
+    /// the FlutterFlow framework.
+    if (kIsWeb) {
+      databaseURL ??= getDatabaseUrl?.call();
+      if (databaseURL == null) {
+        throw Exception('SuperLibrary.databaseURL is null');
+      }
     }
-
     _database ??= FirebaseDatabase.instanceFor(
       app: Firebase.app(),
-      databaseURL: databaseURL!,
+      databaseURL: databaseURL,
     );
 
     return _database!;
@@ -1647,6 +1693,17 @@ class UserService {
   /// Firestore collection name for users
   String collectionName = 'users';
 
+  /// Firestore user document data.
+  /// It is used to store the user data from the Firestore in realtime.
+  /// It includes;
+  /// - displayName, photoURL, created_time,
+  /// - blockedUsers,
+  /// - and other user data.
+  final Map<String, dynamic> _userData = {};
+
+  /// Fires when the user document data in Firestore is changed
+  BehaviorSubject<Map<String, dynamic>> changes = BehaviorSubject.seeded({});
+
   DatabaseReference get databaseUsersRef =>
       database.ref().child(collectionName);
 
@@ -1654,7 +1711,7 @@ class UserService {
 
   init() {
     dog('UserService.init:');
-    _mirrorUserData();
+    _listenAndMirrorUserData();
     initialized = true;
   }
 
@@ -1694,6 +1751,7 @@ class UserService {
     return ref;
   }
 
+  /// Database reference for the blocked users of the current user
   DatabaseReference get myBlockedUsersRef {
     final user = fa.FirebaseAuth.instance.currentUser;
 
@@ -1717,27 +1775,31 @@ class UserService {
   /// The super library is using Firebase Realtime Database for chat and other
   /// functionalities. But the user's displayName and photoURL are stored in
   /// Firestore by FlutterFlow.
-  _mirrorUserData() {
+  _listenAndMirrorUserData() {
     mirrorSubscription?.cancel();
     mirrorSubscription =
         fa.FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
-        dog('Super library -> _mirrorUserData() -> User is not signed in. So, return');
+        dog('Super library -> _listenAndMirrorUserData() -> User is not signed in. So, return');
+        changes.add({});
         return;
       }
 
-      dog('Super library -> _mirrorUserData() -> User is signed in. So, mirror the user data');
+      dog('Super library -> _listenAndMirrorUserData() -> User is signed in. So, mirror the user data');
 
       userDocumentSubscription?.cancel();
       // ! Warning: careful for recursive call by updating the user document and listening to it.
       userDocumentSubscription = doc(user.uid).snapshots().listen((snapshot) {
         if (snapshot.exists == false) {
+          changes.add({});
           return;
         }
 
         // Get user data
         final Map<String, dynamic> data =
             snapshot.data() as Map<String, dynamic>;
+
+        changes.add(data);
 
         // TODO: improve the logic. Check if the blockedUsers has changed, then, update it.
         if (data.keys.contains('blockedUsers') == true) {
@@ -1747,6 +1809,7 @@ class UserService {
         // Copy the 'display_name' into 'dispaly_name_lowercase' for the
         // case-insensitive search.
         // * careful for recursive update and listen to the user document.
+        // * careful that this may lead to the [changes] stream to emit twice.
         if (data['display_name'] != data['display_name_lowercase']) {
           snapshot.reference.update({
             'display_name_lowercase':
