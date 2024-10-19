@@ -34,5 +34,11 @@
     "new_identifier_name": "CustomFunctions",
     "type": "F",
     "is_deleted": false
+  },
+  "show_app_update_dialog.dart": {
+    "old_identifier_name": "showAppUpdateDialog",
+    "new_identifier_name": "showAppUpdateDialog",
+    "type": "A",
+    "is_deleted": false
   }
 }

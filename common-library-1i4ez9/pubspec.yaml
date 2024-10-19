@@ -55,6 +55,7 @@ dependencies:
   shared_preferences_web: 2.2.1
   sqflite: 2.2.6
   timeago: 3.6.1
+  upgrader: ^10.3.0
   url_launcher: 6.3.0
   url_launcher_android: 6.3.4
   url_launcher_ios: 6.3.1
