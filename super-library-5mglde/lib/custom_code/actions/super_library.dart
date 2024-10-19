@@ -117,6 +117,30 @@ class AuthStateChanges extends StatelessWidget {
   }
 }
 
+/// Rebuild the widget based on the user's block status.
+///
+/// If the uid of the user is blocked by the login user, the parameter of the
+/// [builder] will be true. Otherwise, it will be false.
+class BlockedUser extends StatelessWidget {
+  const BlockedUser({super.key, required this.uid, required this.builder});
+  final String uid;
+  final Widget Function(bool) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return MyDoc(builder: (userData) {
+      if (userData == null) {
+        return const SizedBox.shrink();
+      }
+
+      final List<String> blockedUsers =
+          List<String>.from((userData['blockedUsers'] as List?) ?? []);
+
+      return builder(blockedUsers.contains(uid));
+    });
+  }
+}
+
 /// Realtime database chat join model
 class ChatJoin {
   /// For field names
@@ -1362,7 +1386,7 @@ class Memory {
 /// parameter will be null.
 ///
 /// To reduce the flickering, it uses the initialData from the
-/// [UserService.instance._userData].
+/// [UserService.instance.firestoreUserData].
 ///
 class MyDoc extends StatelessWidget {
   const MyDoc({super.key, required this.builder});
@@ -1371,7 +1395,7 @@ class MyDoc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>>(
-      initialData: UserService.instance._userData,
+      initialData: UserService.instance.firestoreUserData,
       stream: UserService.instance.changes,
       builder: (_, snapshot) {
         if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -1593,6 +1617,9 @@ extension SuperLibraryStringExtension on String {
 }
 
 /// Realtime database user modeling class
+///
+/// This model does not represent the user data in the Firestore. It represents
+/// the user data in the Realtime database.
 class UserData {
   ///
   /// Field names used for the Firestore document
@@ -1663,7 +1690,7 @@ class UserData {
   ///
   /// Returns null if the user data does not exist.
   ///
-  /// TODO: make [getUserData] custom action based on this method.
+  /// TODO: make [getFirestoreMemoryUserData] custom action based on this method.
   static Future<UserData?> get(
     String uid, {
     bool cache = true,
@@ -1699,7 +1726,16 @@ class UserService {
   /// - displayName, photoURL, created_time,
   /// - blockedUsers,
   /// - and other user data.
-  final Map<String, dynamic> _userData = {};
+  final Map<String, dynamic> firestoreUserData = {};
+
+  /// Get the value of the key in the firestoreUserData that is the user data from the Firestore document
+  T? getFirestoreMemoryUserData<T>(String k, [T? defaultValue]) {
+    if (firestoreUserData.containsKey(k)) {
+      return firestoreUserData[k] as T;
+    } else {
+      return defaultValue;
+    }
+  }
 
   /// Fires when the user document data in Firestore is changed
   BehaviorSubject<Map<String, dynamic>> changes = BehaviorSubject.seeded({});

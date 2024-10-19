@@ -54,28 +54,36 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
                 },
                 child: const Text('Chat'),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  final re = await confirm(
-                    context: context,
-                    title: const Text('Block'),
-                    message:
-                        const Text('Are you sure you want to block this user?'),
-                  );
-                  if (re != true) {
-                    return;
-                  }
+              BlockedUser(
+                  uid: widget.uid,
+                  builder: (v) {
+                    return ElevatedButton(
+                      onPressed: () async {
+                        final String t = v ? 'Un-Block' : 'Block';
+                        final re = await confirm(
+                          context: context,
+                          title: Text(t),
+                          message:
+                              Text('Are you sure you want to $t this user?'),
+                        );
+                        if (re != true) {
+                          return;
+                        }
+                        if (v) {
+                          await unblockUser(widget.uid);
+                        } else {
+                          await blockUser(widget.uid);
+                        }
 
-                  await blockUser(widget.uid);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('User blocked'),
-                    ),
-                  );
-                },
-                child: const Text('Block'),
-              ),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('User blocked'),
+                          ),
+                        );
+                      },
+                      child: Text(v ? 'Un-Block' : 'Block'),
+                    );
+                  }),
               ElevatedButton(
                 onPressed: () {},
                 child: const Text('Report'),

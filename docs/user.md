@@ -32,6 +32,7 @@
     - [blocking a user](#blocking-a-user)
     - [Un-blocking a User](#un-blocking-a-user)
     - [Listing the blocked users](#listing-the-blocked-users)
+    - [Usage](#usage)
   - [Widgets](#widgets)
     - [BlockedUser](#blockeduser)
   - [Security](#security)
@@ -193,6 +194,11 @@ See the custom actions page
   - When the user A blocks the other user B, B's uid is saved in `/users/A/{ blockedUsers: [ B ] }`.
   - It's the string of uid. Not the reference of the user.
 
+
+
+
+
+
 ### blocking a user
 
 - To block a user, you can call `blockUser` custom action to block a user.
@@ -203,8 +209,9 @@ See the custom actions page
 
 ### Un-blocking a User
 
-- Super library does not provide any method to detect if a user is blocked by the login user or not to make it simple.
-  - It's too easy to provide a helper logic.
+- The `unblockUser` custom action does the unblocking a user.
+  - But it's a good idea to unblock a user with FlutterFlow's Backend Query.
+    - Simply removing the other user's uid from the `blockedUsers` array field of login user is enough.
 - To know if a user is blocked or not, simply do the way how the FlutterFlow goes
   - The `blockedUsers` is in your document. Meaning, it will be automatically synced with the `Authenticated User` variable in FlutterFlow.
     - So, you don't need to query to the Firestore to know if someone is blocked by you or not.
@@ -218,6 +225,15 @@ See the custom actions page
 
 - Simply list the users of `blockedUsers` in the user's document.
 - And remove the uid of the user from the `blockedUsers` in the user's document to rmeove the user from the blocked list.
+- You may want to see the [flutter code to list blocked users](https://github.com/thruthesky/flutterflow_libraries/blob/main/lib/screens/user/block_user_list.screen.dart).
+
+
+### Usage
+
+- To know if a user is blocked by the login user in FlutterFlow, dig in `blockedUsers` field in the FlutterFlow authenticated user variable.
+- To know if a user is blocked by the login user in source coding, dig in `blockedUsers` field in `UserService.instance.firestoreUserData`.
+- You may use `BlockedUser` widget for easy use in the widget tree.
+
 
 
 
@@ -225,8 +241,10 @@ See the custom actions page
 
 ### BlockedUser
 
-This widget listens the blocked users in th Realtime Database and build the UI based on the status of the block.
+This widget listens the login user;s document in Firestore and build the UI based on the status of the block.
 This widget is usefuly on custom coding. You may not use it in the FlutterFlow canvas directly.
+
+
 
 
 

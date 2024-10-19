@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
+/// Display name from the Realtime Database
 class DisplayName extends StatefulWidget {
   const DisplayName({
     super.key,
