@@ -4,6 +4,7 @@
   - [Overview](#overview)
   - [User Authentication](#user-authentication)
   - [UserAvatar](#useravatar)
+  - [DisplayName](#displayname)
   - [User List View](#user-list-view)
     - [Alternative Option](#alternative-option)
     - [Customizing the UI](#customizing-the-ui)
@@ -49,7 +50,7 @@ You can continue using FlutterFlow's authentication methods seamlessly with the 
 
 ## UserAvatar
 
-Use the `UserAvatar` widget to display a user's photo.
+Use the `UserAvatar` widget to display a user's photo. This widget gets user profile photo url from the Realtime Database.
 
 - **No Photo URL**: If no photo URL is provided, it shows a user icon.
 - **Background Color**: The background color is `FlutterFlowTheme.of(context).alternate`.
@@ -58,6 +59,15 @@ Use the `UserAvatar` widget to display a user's photo.
 | No photo url                      | With with photo url                |
 | --------------------------------- | ---------------------------------- |
 | ![image.png](/images/image_2.png) | ![image.png](/images/image(2).png) |
+
+
+
+## DisplayName
+
+Use the `DisplayName` widget to display the display name of a user. This widget displays user's display name from the Realtime Database.
+
+
+
 
 ## User List View
 

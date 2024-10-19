@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:super_library/custom_code/actions/super_library.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:super_library/custom_code/widgets/index.dart';
 
 class BlockUserListScreen extends StatefulWidget {
   static const String routeName = '/BlockUserList';
@@ -35,7 +36,9 @@ class _BlockUserListScreenState extends State<BlockUserListScreen> {
               itemBuilder: (context, index) {
                 final blockedUser = blockedUsers[index];
                 return ListTile(
-                  title: Text(blockedUser),
+                  leading: UserAvatar(uid: blockedUser),
+                  title: DisplayName(uid: blockedUser),
+                  subtitle: Text(blockedUser),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () async {

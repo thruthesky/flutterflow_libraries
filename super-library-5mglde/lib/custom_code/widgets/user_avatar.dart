@@ -25,7 +25,6 @@ class UserAvatar extends StatefulWidget {
 
   final double? width;
   final double? height;
-
   final String uid;
   final double? radius;
 
@@ -38,23 +37,29 @@ class _UserAvatarState extends State<UserAvatar> {
   @override
   Widget build(BuildContext context) {
     dog('initialData: ${Memory.get<UserData>(widget.uid)?.toJson()}');
+
+    String url = '';
+    final Map<String, dynamic>? data =
+        Memory.get<UserData>(widget.uid)?.toJson();
+    if (data != null) {
+      url = data[UserData.field.photoUrl] as String;
+    }
+
     return Value(
-      ref: UserService.instance.databaseUserRef(widget.uid),
-      initialData: Memory.get<UserData>(widget.uid)?.toJson(),
+      ref: UserService.instance
+          .databaseUserRef(widget.uid)
+          .child(UserData.field.photoUrl),
+      initialData: url,
       sync: true,
-      builder: (v, r) {
-        if (v == null) {
-          return anonymousAvatar;
-        }
-        final user = UserData.fromJson(v, widget.uid);
-        if (user.photoUrl.isEmpty) {
+      builder: (url, r) {
+        if (url == null || url.isEmpty) {
           return anonymousAvatar;
         }
 
         return ClipRRect(
           borderRadius: BorderRadius.circular(widget.radius ?? _defaultSize),
           child: CachedNetworkImage(
-            imageUrl: user.photoUrl,
+            imageUrl: url,
             width: widget.width ?? _defaultSize,
             height: widget.height ?? _defaultSize,
             fit: BoxFit.cover,

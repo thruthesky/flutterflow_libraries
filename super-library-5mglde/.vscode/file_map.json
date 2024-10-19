@@ -95,6 +95,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "display_name.dart": {
+    "old_identifier_name": "DisplayName",
+    "new_identifier_name": "DisplayName",
+    "type": "W",
+    "is_deleted": false
+  },
   "open_chat_room_list_view.dart": {
     "old_identifier_name": "OpenChatRoomListView",
     "new_identifier_name": "OpenChatRoomListView",
