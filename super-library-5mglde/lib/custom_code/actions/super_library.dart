@@ -47,47 +47,6 @@ String get myUid {
   return fa.FirebaseAuth.instance.currentUser!.uid;
 }
 
-/// User references --------------------------------------------------------------------------------
-/// Database reference for the user with [uid]
-DatabaseReference databaseUserRef(String uid) {
-  return UserService.instance.databaseUserRef(uid);
-}
-
-/// Returns the user's photo url reference
-DatabaseReference userPhotoUrlRef(String uid) =>
-    databaseUserRef(uid).child(UserData.field.photoUrl);
-
-/// Chat helpers -----------------------------------------------------------------------------------
-
-/// Return true if the chat room is a single chat room.
-bool isSingleChatRoom(roomId) => ChatService.instance.isSingleChatRoom(roomId);
-
-/// Return the other user's uid from the single chat room id.
-/// If it's not the single chat room id, it throws exception;
-String otherUid(roomId) => ChatService.instance.getOtherUid(roomId);
-
-/// Returns other user's uid if it's single chat room.
-///
-/// [roomId] may be a user uid, chat room id, or single chat room id.
-///
-/// If it's not single chat room, it returns the same input string which may be
-/// a user uid or chat room id.
-///
-/// It does not throw exception unlike [otherUid].
-String maybeOtherUidOrRoomId(roomId) {
-  if (isSingleChatRoom(roomId)) {
-    return otherUid(roomId);
-  } else {
-    return roomId;
-  }
-}
-
-DatabaseReference roomRef(String roomId) =>
-    ChatService.instance.roomRef(roomId);
-
-/// Database reference for the user of the uid
-DatabaseReference userRef(String uid) => databaseUserRef(uid);
-
 /// Database reference for the current user
 DatabaseReference get myRef => userRef(myUid);
 
@@ -802,7 +761,7 @@ class ChatService {
     // Add your function code here!
 
     // Check if the user is blocked by login user
-    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+    if (UserService.instance.hasBlocked(otherUidOrRoomId(roomId))) {
       throw SuperLibraryException('chat/send-message', 'User is blocked');
     }
 
@@ -1067,7 +1026,7 @@ class ChatService {
     dog("Joining into roomId: $roomId");
 
     // Check if the user is blocked by login user
-    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+    if (UserService.instance.hasBlocked(otherUidOrRoomId(roomId))) {
       throw SuperLibraryException('chat/join', 'User is blocked');
     }
 
@@ -1195,7 +1154,7 @@ class ChatService {
   Future<void> enter(String roomId) async {
     dog("Entering into roomId: $roomId");
     // Check if the user is blocked by login user
-    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+    if (UserService.instance.hasBlocked(otherUidOrRoomId(roomId))) {
       throw SuperLibraryException('chat/enter', 'User is blocked');
     }
 
@@ -1327,6 +1286,13 @@ class Component {
   static Widget Function(ChatMessage)? chatMessageListTile;
 }
 
+/// User references --------------------------------------------------------------------------------
+/// Database reference for the user with [uid]
+@Deprecated('Use [Ref.user] instead')
+DatabaseReference databaseUserRef(String uid) {
+  return UserService.instance.databaseUserRef(uid);
+}
+
 /// Print log message with emoji 🐶
 void dog(dynamic msg, {int level = 0}) {
   if (kReleaseMode) return;
@@ -1422,6 +1388,9 @@ Future<SitePreviewData?> loadSitePreview({
   );
 }
 
+/// Return true if the chat room is a single chat room.
+bool isSingleChatRoom(roomId) => ChatService.instance.isSingleChatRoom(roomId);
+
 /// Memory
 ///
 /// A static memory class to store data in memory
@@ -1487,6 +1456,108 @@ class MyDoc extends StatelessWidget {
   }
 }
 
+/// Return the other user's uid from the single chat room id.
+///
+/// * If it's not the single chat room id, it throws exception;
+String otherUid(roomId) => ChatService.instance.getOtherUid(roomId);
+
+/// Returns other user's uid if it's single chat room. If the input roomId is
+/// not single chat room, it returns the same input string.
+///
+/// [roomId] may be a user uid, chat room id, or single chat room id.
+///
+/// If it's not single chat room, it returns the same input string which may be
+/// a user uid or chat room id.
+///
+/// * The difference between [otherUid] and [otherUidOrRoomId] is that
+/// [otherUidOrRoomId] does not throw exception if the input roomId is not a
+/// single chat room id.
+String otherUidOrRoomId(roomId) {
+  if (isSingleChatRoom(roomId)) {
+    return otherUid(roomId);
+  } else {
+    return roomId;
+  }
+}
+
+/// [Ref] class has the Realtime Database references
+class Ref {
+  static DatabaseReference user(String uid) =>
+      UserService.instance.databaseUserRef(uid);
+  static userPhotoUrl(String uid) => user(uid).child(UserData.field.photoUrl);
+  static DatabaseReference get my => user(myUid);
+
+  // Returns the chat room reference.
+  static DatabaseReference room(String roomId) =>
+      ChatService.instance.roomRef(roomId);
+}
+
+class Report {
+  final String id;
+  final String reporter;
+  final String reportee;
+  final String path;
+  final String reason;
+  final String type;
+  final String summary;
+  final DateTime createdAt;
+
+  Report({
+    required this.id,
+    required this.reporter,
+    required this.reportee,
+    required this.path,
+    required this.reason,
+    required this.type,
+    required this.summary,
+    required this.createdAt,
+  });
+
+  static fs.CollectionReference get col => firestore.collection('reports');
+
+  factory Report.fromSnapshot(DataSnapshot snapshot) {
+    return Report.fromJson(
+      Map<String, dynamic>.from(snapshot.value as Map),
+      snapshot.key!,
+    );
+  }
+
+  factory Report.fromJson(Map<String, dynamic> json, String id) {
+    return Report(
+      id: id,
+      reporter: json['reporter'] ?? '',
+      reportee: json['reportee'] ?? '',
+      path: json['path'] ?? '',
+      reason: json['reason'] ?? '',
+      type: json['type'] ?? '',
+      summary: json['summary'] ?? '',
+      createdAt: json['createdAt'] != null && json['createdAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'reporter': reporter,
+      'reportee': reportee,
+      'path': path,
+      'reason': reason,
+      'createdAt': createdAt,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Report(${toJson()})';
+  }
+}
+
+/// [roomRef] returns the chat room reference.
+DatabaseReference roomRef(String roomId) => Ref.room(roomId);
+
+/// [SitePreview] is a widget to show the preview of the site.
 class SitePreview extends StatelessWidget {
   const SitePreview({
     super.key,
@@ -1789,6 +1860,15 @@ class UserData {
     return UserData.fromSnapshot(snapshot);
   }
 }
+
+/// Returns the user's photo url reference
+@Deprecated('Use [Ref.userPhotoUrl] instead')
+DatabaseReference userPhotoUrlRef(String uid) =>
+    databaseUserRef(uid).child(UserData.field.photoUrl);
+
+/// Database reference for the user of the uid
+@Deprecated('Use [Ref.user] instead')
+DatabaseReference userRef(String uid) => databaseUserRef(uid);
 
 class UserService {
   static UserService? _instance;
@@ -2175,68 +2255,6 @@ extension SuperLibraryDateTimeExtension on DateTime {
 
   /// The day previous this [DateTime]
   DateTime get previousDay => subtract(const Duration(days: 1));
-}
-
-class Report {
-  final String id;
-  final String reporter;
-  final String reportee;
-  final String path;
-  final String reason;
-  final String type;
-  final String summary;
-  final DateTime createdAt;
-
-  Report({
-    required this.id,
-    required this.reporter,
-    required this.reportee,
-    required this.path,
-    required this.reason,
-    required this.type,
-    required this.summary,
-    required this.createdAt,
-  });
-
-  static fs.CollectionReference get col => firestore.collection('reports');
-
-  factory Report.fromSnapshot(DataSnapshot snapshot) {
-    return Report.fromJson(
-      Map<String, dynamic>.from(snapshot.value as Map),
-      snapshot.key!,
-    );
-  }
-
-  factory Report.fromJson(Map<String, dynamic> json, String id) {
-    return Report(
-      id: id,
-      reporter: json['reporter'] ?? '',
-      reportee: json['reportee'] ?? '',
-      path: json['path'] ?? '',
-      reason: json['reason'] ?? '',
-      type: json['type'] ?? '',
-      summary: json['summary'] ?? '',
-      createdAt: json['createdAt'] != null && json['createdAt'] is int
-          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'])
-          : DateTime.now(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'reporter': reporter,
-      'reportee': reportee,
-      'path': path,
-      'reason': reason,
-      'createdAt': createdAt,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Report(${toJson()})';
-  }
 }
 
 /// Put this at the bottom !!
