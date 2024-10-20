@@ -29,6 +29,12 @@
     "type": "A",
     "is_deleted": false
   },
+  "leave_chat_room.dart": {
+    "old_identifier_name": "leaveChatRoom",
+    "new_identifier_name": "leaveChatRoom",
+    "type": "A",
+    "is_deleted": false
+  },
   "report.dart": {
     "old_identifier_name": "report",
     "new_identifier_name": "report",

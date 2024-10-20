@@ -26,12 +26,12 @@ class ChatMessageListView extends StatefulWidget {
     super.key,
     this.width,
     this.height,
-    required this.roomId,
+    required this.uidOrRoomId,
   });
 
   final double? width;
   final double? height;
-  final String roomId;
+  final String uidOrRoomId;
 
   @override
   State<ChatMessageListView> createState() => _ChatMessageListViewState();
@@ -44,7 +44,7 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
   double get leftRightBubblePadding => 16;
 
   String get roomId => ChatService.instance.convertIfUidToSingleChatRoomId(
-        widget.roomId,
+        widget.uidOrRoomId,
       );
 
   @override

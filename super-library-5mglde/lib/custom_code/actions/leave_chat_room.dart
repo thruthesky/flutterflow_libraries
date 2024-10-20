@@ -7,16 +7,6 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import '/custom_code/actions/super_library.dart';
-import 'package:firebase_database/firebase_database.dart';
-
-Future sendChatMessage(
-  String uidOrRoomId,
-  String? text,
-) async {
+Future leaveChatRoom(String uidOrRoomId) async {
   // Add your function code here!
-  await ChatService.instance.sendMessage(
-    roomId: uidOrRoomId,
-    text: text,
-  );
 }
