@@ -937,6 +937,24 @@ class ChatService {
     updateUrlPreview(messageRef.key!, roomId, text);
   }
 
+  /// Clear the new message count of the chat room.
+  ///
+  /// Use this method to clear the new message count of the chat room.
+  Future<void> clearNewMessageCount(String roomId) async {
+    final room = await ChatRoom.get(roomId);
+    if (room == null) {
+      throw SuperLibraryException(
+          'chat/clear-new-message-count', 'Room not found');
+    }
+
+    final updates = {
+      'chat/settings/$myUid/${ChatJoin.field.newMessageCount}/$roomId': null,
+      'chat/joins/$myUid/$roomId/${ChatJoin.field.newMessageCount}': null,
+    };
+
+    await database.ref().update(updates);
+  }
+
   Future<void> updateUrlPreview(
       String messageId, String roomId, String? text) async {
     if (text == null) return;

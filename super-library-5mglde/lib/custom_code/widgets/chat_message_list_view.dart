@@ -74,6 +74,10 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
       reverseQuery: true,
       query: ChatService.instance.messagesRef(roomId),
       builder: (snapshot, fetchMore) {
+        /// Clear the unread count when the user sees the messages.
+        ChatService.instance.clearNewMessageCount(roomId);
+
+        /// This is the list of chat messages.
         return ListView.separated(
           itemCount: snapshot.docs.length,
           reverse: true,

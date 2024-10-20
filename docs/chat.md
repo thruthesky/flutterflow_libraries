@@ -19,8 +19,11 @@
     - [Customizing Open Chat Room List with Component](#customizing-open-chat-room-list-with-component)
   - [Opening a chat room screen](#opening-a-chat-room-screen)
   - [Inviting a user into a chat room](#inviting-a-user-into-a-chat-room)
+  - [Chat room leave](#chat-room-leave)
   - [Logic of blocking user](#logic-of-blocking-user)
   - [UI and UX](#ui-and-ux)
+  - [Known Issues](#known-issues)
+    - [No of Chat room message for blocked user](#no-of-chat-room-message-for-blocked-user)
 
 
 
@@ -263,6 +266,15 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
+## Chat room leave
+
+- When user-A leaves the chat room with user-B,
+  - The message from user-B will no longer delivered to user-A
+
+- For the user-A to enter the chat room with user-B, user-A must find user-B and enter chat room.
+  - Then, the message from user-B will appear in the chat message list view.
+
+
 
 
 
@@ -293,3 +305,18 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
+
+
+
+## Known Issues
+
+
+### No of Chat room message for blocked user
+
+- Login user is A, the other user id B
+    - A sent 2 message to B
+        - The no of new messages is 2.
+        - Then, A blocked B.
+            - The no of new messages is still 2.
+
+- This is a known issue. But it's not critical. And this may be fixed sometime later.

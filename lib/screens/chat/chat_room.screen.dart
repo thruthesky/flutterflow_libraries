@@ -1,3 +1,4 @@
+import 'package:common_library/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +33,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         title: Row(
           children: [
             ChatRoomIcon(roomId: widget.roomId),
-            const Text('ChatRoom'),
+            Expanded(
+              child: const Text(
+                'ChatRoom',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -62,6 +69,39 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             },
             icon: const Icon(Icons.settings),
           ),
+          PopupMenuButton(
+            itemBuilder: (_) {
+              return [
+                PopupMenuItem(
+                  value: 'leave',
+                  child: const Text('Leave'),
+                ),
+                PopupMenuItem(child: const Divider()),
+                PopupMenuItem(
+                  value: 'go-back',
+                  child: const Text('Go back'),
+                ),
+              ];
+            },
+            icon: const Icon(Icons.menu),
+            onSelected: (value) async {
+              if (value == 'leave') {
+                final result = await confirm(
+                  context: context,
+                  title: const Text('Leave chat room'),
+                  message: const Text('Do you want to leave this chat room?'),
+                );
+                if (result == true) {
+                  await leaveChatRoom(widget.roomId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                }
+              } else if (value == 'go-back') {
+                Navigator.pop(context);
+              }
+            },
+          ),
         ],
       ),
       body: Center(
@@ -72,7 +112,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             children: <Widget>[
               Expanded(
                 child: ChatMessageListView(
-                  roomId: widget.roomId,
+                  uidOrRoomId: widget.roomId,
                 ),
               ),
               SafeArea(
