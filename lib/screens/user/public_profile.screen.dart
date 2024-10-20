@@ -41,18 +41,23 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
           if (user != null) Text(user!.displayName),
           Wrap(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) {
-                      return ChatRoomScreen(
-                        roomId: widget.uid,
-                      );
-                    },
-                  );
-                },
-                child: const Text('Chat'),
+              BlockedUser(
+                uid: widget.uid,
+                builder: (v) => ElevatedButton(
+                  onPressed: v
+                      ? null
+                      : () {
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) {
+                              return ChatRoomScreen(
+                                roomId: widget.uid,
+                              );
+                            },
+                          );
+                        },
+                  child: const Text('Chat'),
+                ),
               ),
               BlockedUser(
                   uid: widget.uid,

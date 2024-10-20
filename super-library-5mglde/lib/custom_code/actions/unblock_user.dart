@@ -13,7 +13,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 Future unblockUser(String otherUid) async {
   final myRef = firestore.collection('users').doc(myUid);
 
-  await myRef.set({
-    'blockedUsers': FieldValue.arrayRemove([otherUid])
-  }, SetOptions(merge: true));
+  await Future.wait([
+    myRef.set(
+      {
+        'blockedUsers': FieldValue.arrayRemove([otherUid])
+      },
+      SetOptions(merge: true),
+    ),
+    UserService.instance.myBlockedUsersRef.child(otherUid).set(null)
+  ]);
 }

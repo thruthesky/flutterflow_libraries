@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_library/custom_code/actions/index.dart';
 import 'package:super_library/custom_code/actions/super_library.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:super_library/custom_code/widgets/index.dart';
@@ -48,9 +49,7 @@ class _BlockUserListScreenState extends State<BlockUserListScreen> {
                         message: Text('Do you want to unblock $blockedUser?'),
                       );
                       if (result == true) {
-                        UserService.instance.myDoc.update({
-                          'blockedUsers': FieldValue.arrayRemove([blockedUser]),
-                        });
+                        unblockUser(blockedUser);
                       }
                     },
                   ),

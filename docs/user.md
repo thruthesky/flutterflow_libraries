@@ -190,6 +190,8 @@ See the custom actions page
 
 ### Database structure for Blocking
 
+- Create a String array field to store the blocked user's uid list in the user's schema and the `blockUser` and the `unblockUser` custom actions will do user blocking and unblocking.
+
 - `/users/<uid> { blockedUsers: [ ... ] }`: The uid of other users will be saved in the login user's Firestore document.
   - When the user A blocks the other user B, B's uid is saved in `/users/A/{ blockedUsers: [ B ] }`.
   - It's the string of uid. Not the reference of the user.
@@ -202,29 +204,28 @@ See the custom actions page
 ### blocking a user
 
 - To block a user, you can call `blockUser` custom action to block a user.
-  - Or you can simply create your own Backend Query to save the other user's uid into the `blockedUsers` array field in your user document.
+- When user-A blocks user-B,
+    - The `blockUser` custom action will add B's uid into `blockedUsers` array field in A's fireestore user document.
+        - And, mirror the the B's uid at `/blocked-users/A/{ B }` in the Reatime Database.
+        - And, leave the chat room with B if there is.
 
-- The `blockUser` custom action will save the user's uid into the `blockedUsers` array field.
-  - And the `blockedUsers` field will be mirrored to `/blocked-users/<my-uid>/` by the `_mirrorUserData` method in the super library automatically.
 
 ### Un-blocking a User
 
+
 - The `unblockUser` custom action does the unblocking a user.
-  - But it's a good idea to unblock a user with FlutterFlow's Backend Query.
-    - Simply removing the other user's uid from the `blockedUsers` array field of login user is enough.
+  - And it mirror the other user's uid from the Realtime Database.
+
 - To know if a user is blocked or not, simply do the way how the FlutterFlow goes
-  - The `blockedUsers` is in your document. Meaning, it will be automatically synced with the `Authenticated User` variable in FlutterFlow.
-    - So, you don't need to query to the Firestore to know if someone is blocked by you or not.
+  - The `blockedUsers` is in the login user's document. Meaning, it will be automatically synced with the `Authenticated User` variable in FlutterFlow.
   - To display if the user is blocked or not, check if the user's uid is in the `blockedUsers` of `Authenticated User`.
-    - And if the uid exists, then the user is blocked and you can unblock the user.
-    - Again super library does not provide any method for this. You can simply query the Firestore to remove the other user's uid from `blockedUsers` array field.
-- The super library will automatically remove the user's uid from the Realtime Database if the uid is removed from the `blockedUsers` array field the user's document.
+    - And if the uid exists, then the user is blocked by the login user and the login user can unblock the user.
 
 
 ### Listing the blocked users
 
-- Simply list the users of `blockedUsers` in the user's document.
-- And remove the uid of the user from the `blockedUsers` in the user's document to rmeove the user from the blocked list.
+- To list all the users that the login user has blocked, simply list the blocked-users whose uid is in `blockedUsers` in the user's Firestore document.
+- And remove the user from blocked-list, call `unblockUser` custom action.
 - You may want to see the [flutter code to list blocked users](https://github.com/thruthesky/flutterflow_libraries/blob/main/lib/screens/user/block_user_list.screen.dart).
 
 
@@ -241,7 +242,7 @@ See the custom actions page
 
 ### BlockedUser
 
-This widget listens the login user;s document in Firestore and build the UI based on the status of the block.
+This widget listens the login user's document in Firestore and build the UI based on the status of the block.
 This widget is usefuly on custom coding. You may not use it in the FlutterFlow canvas directly.
 
 

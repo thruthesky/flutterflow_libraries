@@ -19,6 +19,8 @@
     - [Customizing Open Chat Room List with Component](#customizing-open-chat-room-list-with-component)
   - [Opening a chat room screen](#opening-a-chat-room-screen)
   - [Inviting a user into a chat room](#inviting-a-user-into-a-chat-room)
+  - [Logic of blocking user](#logic-of-blocking-user)
+  - [UI and UX](#ui-and-ux)
 
 
 
@@ -265,10 +267,27 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
+## Logic of blocking user
+
+- When a User-A blocks another User-B, 
+    - The `blockUser` custom action makes the User-A leaves the chat room with User-B if there is a chat room between A and B.
+    - A cannot join the chat room with B.
+    - A cannot send a chat message to B.
+
+- User can report a chat room. But there is no way to block a chat room.
 
 
 
+## UI and UX
 
+- The login user cannot join the chat room and cannot send message to the blocked users.
+    - The super library will throw exceptions
+
+- For blocked user, It is recommended to
+    - when the chat button is being pressed, alert the login user before entering the chat room that the other user is blocked;
+    - or disable the chat button for the blocked users;
+    - If you don't handle the exception,
+      - The chat message list view may still display chat messages and the it may look like sending message works.
 
 
 

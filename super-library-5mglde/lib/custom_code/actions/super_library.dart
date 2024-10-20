@@ -63,7 +63,24 @@ DatabaseReference userPhotoUrlRef(String uid) =>
 bool isSingleChatRoom(roomId) => ChatService.instance.isSingleChatRoom(roomId);
 
 /// Return the other user's uid from the single chat room id.
+/// If it's not the single chat room id, it throws exception;
 String otherUid(roomId) => ChatService.instance.getOtherUid(roomId);
+
+/// Returns other user's uid if it's single chat room.
+///
+/// [roomId] may be a user uid, chat room id, or single chat room id.
+///
+/// If it's not single chat room, it returns the same input string which may be
+/// a user uid or chat room id.
+///
+/// It does not throw exception unlike [otherUid].
+String maybeOtherUidOrRoomId(roomId) {
+  if (isSingleChatRoom(roomId)) {
+    return otherUid(roomId);
+  } else {
+    return roomId;
+  }
+}
 
 DatabaseReference roomRef(String roomId) =>
     ChatService.instance.roomRef(roomId);
@@ -760,6 +777,7 @@ class ChatService {
   DatabaseReference messagesRef(String roomId) =>
       database.ref('chat/messages').child(roomId);
 
+  /// Get the chat room join data reference of the login user.
   DatabaseReference get joinsRef => database.ref('chat/joins').child(myUid);
 
   DatabaseReference get roomsRef => database.ref('chat/rooms');
@@ -773,13 +791,24 @@ class ChatService {
       .child('settings')
       .child(myUid);
 
+  /// Send a message to the chat room.
+  ///
+  /// [roomId] may be a user's uid and it can be the chat room id.
   Future sendMessage({
     required String roomId,
     String? text,
     String? photoUrl,
   }) async {
     // Add your function code here!
-    roomId = mayConvertSingleChatRoomId(roomId);
+
+    // Check if the user is blocked by login user
+    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+      throw SuperLibraryException('chat/send-message', 'User is blocked');
+    }
+
+    // Convert the single chat room id if it's single chat room.
+    roomId = convertIfUidToSingleChatRoomId(roomId);
+
     // Get the cached user data
     final my = await UserData.get(myUid);
 
@@ -940,7 +969,8 @@ class ChatService {
     return arr.join(joinSeparator);
   }
 
-  /// Returns the chat room id from the other user uid.
+  /// Returns the single-chat room-id if the input string is a user uid. If the
+  /// input string is not a user uid, it returns the same string.
   ///
   /// If the [otherUid] is not a uid, it should be the chat room id. then, it
   /// will return it as it is.
@@ -953,7 +983,7 @@ class ChatService {
   /// - To make it clean code, it will automatically convert the other uid into
   /// chat room id. So, the developer can simply pass the other user's uid or
   /// chat room id.
-  String mayConvertSingleChatRoomId(String otherUid) {
+  String convertIfUidToSingleChatRoomId(String otherUid) {
     // If it's a node key, return it as it is.
     if (otherUid.startsWith('-')) {
       return otherUid;
@@ -1006,6 +1036,7 @@ class ChatService {
   ///
   /// This method is used to join a chat room.
   ///
+  /// [roomId] may be a user uid. It can be the chat room id.
   ///
   /// Where:
   /// - It is called in chat message list view.
@@ -1016,6 +1047,11 @@ class ChatService {
   ///   room.users field with requireConsent: true.
   Future<void> join(String roomId) async {
     dog("Joining into roomId: $roomId");
+
+    // Check if the user is blocked by login user
+    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+      throw SuperLibraryException('chat/join', 'User is blocked');
+    }
 
     // Prepare
     const f = ChatJoin.field;
@@ -1030,7 +1066,7 @@ class ChatService {
       } else {
         // Group chat room must exist before entering chat room.
         throw SuperLibraryException(
-            'chat-room-join', 'Group chat room not found');
+            'chat/room-join', 'Group chat room not found');
       }
     } else if (room.joined &&
         room.users.containsKey(myUid) &&
@@ -1094,6 +1130,8 @@ class ChatService {
   /// Invite a user to a chat room
   ///
   /// Only the group chat room can invite a user.
+  ///
+  /// * Put false in the user's uid in the room.users.
   Future<void> invite({
     required String roomId,
     required String otherUid,
@@ -1134,7 +1172,15 @@ class ChatService {
   }
 
   /// Adjust chat data upon entering the chat room
+  ///
+  /// [roomId] may be a user uid or may be the chat room id.
   Future<void> enter(String roomId) async {
+    dog("Entering into roomId: $roomId");
+    // Check if the user is blocked by login user
+    if (UserService.instance.hasBlocked(maybeOtherUidOrRoomId(roomId))) {
+      throw SuperLibraryException('chat/enter', 'User is blocked');
+    }
+
     const f = ChatJoin.field;
 
     // Using get() is having problem, because sometimes it is getting the
@@ -1168,6 +1214,20 @@ class ChatService {
       // 'chat/joins/$myUid/$roomId/${f.openOrder}': updatedOrder,
     };
     await database.ref().update(enterValues);
+  }
+
+  /// [uidOrRoomId] may be a user uid. It can be the chat room id.
+  ///
+  ///
+  /// Logic:
+  /// - Delete the user's uid from the room.users.
+  /// - Delete the chat join data of the user.
+  Future<void> leave(String uidOrRoomId) async {
+    // Add your function code here!
+    final roomId = convertIfUidToSingleChatRoomId(uidOrRoomId);
+
+    await joinsRef.child(roomId).remove();
+    await roomRef(roomId).child('users').child(myUid).remove();
   }
 }
 
@@ -1690,7 +1750,7 @@ class UserData {
   ///
   /// Returns null if the user data does not exist.
   ///
-  /// TODO: make [getFirestoreMemoryUserData] custom action based on this method.
+  /// TODO: make [getValueFromFirestoreMemoryUserData] custom action based on this method.
   static Future<UserData?> get(
     String uid, {
     bool cache = true,
@@ -1726,16 +1786,28 @@ class UserService {
   /// - displayName, photoURL, created_time,
   /// - blockedUsers,
   /// - and other user data.
-  final Map<String, dynamic> firestoreUserData = {};
+  Map<String, dynamic> firestoreUserData = {};
 
-  /// Get the value of the key in the firestoreUserData that is the user data from the Firestore document
-  T? getFirestoreMemoryUserData<T>(String k, [T? defaultValue]) {
+  /// Get a value in the firestoreUserData that is the user data from the Firestore document
+  ///
+  /// Use this method to get the login user data from the Firestore document cached in memeory.
+  T getValueFromFirestoreMemoryUserData<T>(String k, T defaultValue) {
     if (firestoreUserData.containsKey(k)) {
       return firestoreUserData[k] as T;
     } else {
       return defaultValue;
     }
   }
+
+  /// Short alias for [getValueFromFirestoreMemoryUserData]
+  T value<T>(String k, T defaultValue) =>
+      getValueFromFirestoreMemoryUserData(k, defaultValue);
+
+  /// Get the blocked users of the current user
+  List get blockedUsers => value<List>('blockedUsers', []);
+  String? get photoUrl => value<String?>('photoUrl', null);
+
+  bool hasBlocked(String uid) => blockedUsers.contains(uid) == true;
 
   /// Fires when the user document data in Firestore is changed
   BehaviorSubject<Map<String, dynamic>> changes = BehaviorSubject.seeded({});
@@ -1817,6 +1889,7 @@ class UserService {
         fa.FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
         dog('Super library -> _listenAndMirrorUserData() -> User is not signed in. So, return');
+        firestoreUserData.clear();
         changes.add({});
         return;
       }
@@ -1835,17 +1908,14 @@ class UserService {
         final Map<String, dynamic> data =
             snapshot.data() as Map<String, dynamic>;
 
+        firestoreUserData = data;
         changes.add(data);
-
-        // TODO: improve the logic. Check if the blockedUsers has changed, then, update it.
-        if (data.keys.contains('blockedUsers') == true) {
-          myBlockedUsersRef.set(data['blockedUsers']);
-        }
 
         // Copy the 'display_name' into 'dispaly_name_lowercase' for the
         // case-insensitive search.
         // * careful for recursive update and listen to the user document.
-        // * careful that this may lead to the [changes] stream to emit twice.
+        // * careful that this leads to the [changes] stream to emit twice only
+        // * when the user's display_name changes.
         if (data['display_name'] != data['display_name_lowercase']) {
           snapshot.reference.update({
             'display_name_lowercase':

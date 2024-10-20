@@ -43,16 +43,19 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
   double get textPadding => 10;
   double get leftRightBubblePadding => 16;
 
-  String get roomId => ChatService.instance.mayConvertSingleChatRoomId(
+  String get roomId => ChatService.instance.convertIfUidToSingleChatRoomId(
         widget.roomId,
       );
 
   @override
   void initState() {
     super.initState();
+    init();
+  }
 
-    ChatService.instance.join(roomId);
-    ChatService.instance.enter(roomId);
+  init() async {
+    await ChatService.instance.join(roomId);
+    await ChatService.instance.enter(roomId);
 
     // Listen and update the chat room data in memory. So, it can be used in
     // other widgets. By doing this, the 'users' field of the chat room is

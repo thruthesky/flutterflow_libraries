@@ -82,11 +82,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     hintText: 'Enter message',
                     suffixIcon: IconButton(
                       onPressed: () async {
+                        final text = textController.text;
+                        textController.clear();
                         await sendChatMessage(
                           widget.roomId,
-                          textController.text,
+                          text,
                         );
-                        textController.clear();
                       },
                       icon: const Icon(Icons.send),
                     ),
