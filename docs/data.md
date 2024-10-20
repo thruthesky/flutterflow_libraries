@@ -1,4 +1,4 @@
-# Data API
+# Data
 
 Imagine you are building a social app that displays users' tweets, photos, and comments on a scrollable main screen. If your app grows, using Firestore can become expensive due to the costs associated with reading, writing, and downloading the size of documents from Firestore.
 
@@ -6,19 +6,33 @@ Using the Realtime Database is faster, cheaper, and simpler.
 
 ## Features
 
-The `Data API` provides default CRUD operations for the Realtime Database:
+The `Data` provides default CRUD operations for the Realtime Database:
 
 - **readData**: Custom action to read data.
-- **writeData**: Custom action to create or update data.
+- **createData**: Custom action to create data.
+- **updateData**: Custom action to update data.
 - **deleteData**: Custom action to delete data.
 - **DataListView**: Widget to display a list of values in a data group.
 - **Data**: Widget to display a value of the data.
 
-## Comment API
-
-With the `Comment API`, you can easily build blog or forum community apps. Refer to the `Comment API` documentation for more details.
+With the `Comment`, you can easily build blog or forum community apps. Refer to the `Comment` documentation for more details.
 
 
+
+## Installation
+
+
+```json
+"data": {
+  ".read": true,
+  "$key": {
+    ".write": "newData.child('uid').val() === auth.uid || ( data.child('uid').val() === auth.uid && !newData.exists() )",
+    "category": {
+      ".validate": "newData.val().length > 0"
+    }
+  }
+},
+```
 
 
 ## Database Structure
@@ -28,6 +42,11 @@ To achieve the concept of `SSOT` (Single Source of Truth), we save all data in t
 ### Security
 
 - To prevent attacks that involve writing excessively large data (e.g., very long titles or content), you can add security rules to limit the size of these fields.
+  - By default, the title is limited in `2048` letters and the content is limited in `65536` letters by the security rules. You can change them and add more rules.
+
+
+
+
 
 ### Data Format
 

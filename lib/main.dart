@@ -12,6 +12,8 @@ import 'package:super_example/screens/chat/chat_room.list.screen.dart';
 import 'package:super_example/firebase_options.dart';
 import 'package:super_example/screens/chat/open_chat_room.list.screen.dart';
 import 'package:super_example/screens/common_safe_area/common_safe_area.screen.dart';
+import 'package:super_example/screens/data/data.screen.dart';
+import 'package:super_example/screens/data/data.test.screen.dart';
 import 'package:super_example/screens/site_preview/site_preview.screen.dart';
 import 'package:super_example/screens/user/block_user_list.screen.dart';
 import 'package:super_example/screens/user/custom.user_list_view.screen.dart';
@@ -112,6 +114,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Timer(Duration(milliseconds: 100), test);
+    });
+  }
+
+  /// Write test code here
+  void test() async {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return DataTestScreen();
+      },
+    );
   }
 
   @override
@@ -409,6 +425,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       },
                       child: const Text('CommonSafeArea')),
+                  ElevatedButton(
+                      onPressed: () {
+                        showGeneralDialog(
+                          context: context,
+                          pageBuilder: (_, __, ___) {
+                            return DataScreen();
+                          },
+                        );
+                      },
+                      child: Text('Data')),
                   ElevatedButton(
                       onPressed: () {
                         showGeneralDialog(

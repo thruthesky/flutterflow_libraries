@@ -7,9 +7,20 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import '/custom_code/actions/super_library.dart';
-
-Future leaveChatRoom(String uidOrRoomId) async {
+Future updateData(
+  String? category,
+  String? title,
+  String? content,
+  List<String>? urls,
+  dynamic data,
+) async {
   // Add your function code here!
-  await ChatService.instance.leave(uidOrRoomId);
+
+  await data.update(
+    category: category,
+    title: title,
+    content: content,
+    urls: urls,
+    data: data,
+  );
 }

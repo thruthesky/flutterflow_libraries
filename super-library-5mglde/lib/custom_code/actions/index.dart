@@ -10,3 +10,7 @@ export 'update_chat_room.dart' show updateChatRoom;
 export 'edit_chat_room.dart' show editChatRoom;
 export 'is_anonymous.dart' show isAnonymous;
 export 'leave_chat_room.dart' show leaveChatRoom;
+export 'create_data.dart' show createData;
+export 'update_data.dart' show updateData;
+export 'delete_data.dart' show deleteData;
+export 'read_data.dart' show readData;

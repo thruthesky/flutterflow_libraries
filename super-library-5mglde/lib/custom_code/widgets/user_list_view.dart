@@ -38,7 +38,7 @@ class _UserListViewState extends State<UserListView> {
     return ValueListView(
       reverseQuery: widget.reverse == true,
       query: UserService.instance.databaseUsersRef
-          .orderByChild(UserData.field.creatAt)
+          .orderByChild(UserData.field.createdAt)
           .startAt(0),
       builder: (snapshot, fetchMore) {
         return ListView.separated(

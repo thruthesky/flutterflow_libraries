@@ -11,6 +11,18 @@
     "type": "A",
     "is_deleted": false
   },
+  "create_data.dart": {
+    "old_identifier_name": "createData",
+    "new_identifier_name": "createData",
+    "type": "A",
+    "is_deleted": false
+  },
+  "delete_data.dart": {
+    "old_identifier_name": "deleteData",
+    "new_identifier_name": "deleteData",
+    "type": "A",
+    "is_deleted": false
+  },
   "edit_chat_room.dart": {
     "old_identifier_name": "editChatRoom",
     "new_identifier_name": "editChatRoom",
@@ -32,6 +44,12 @@
   "leave_chat_room.dart": {
     "old_identifier_name": "leaveChatRoom",
     "new_identifier_name": "leaveChatRoom",
+    "type": "A",
+    "is_deleted": false
+  },
+  "read_data.dart": {
+    "old_identifier_name": "readData",
+    "new_identifier_name": "readData",
     "type": "A",
     "is_deleted": false
   },
@@ -68,6 +86,12 @@
   "update_chat_room.dart": {
     "old_identifier_name": "updateChatRoom",
     "new_identifier_name": "updateChatRoom",
+    "type": "A",
+    "is_deleted": false
+  },
+  "update_data.dart": {
+    "old_identifier_name": "updateData",
+    "new_identifier_name": "updateData",
     "type": "A",
     "is_deleted": false
   },

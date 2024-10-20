@@ -1,4 +1,5 @@
 // Automatic FlutterFlow imports
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -9,7 +10,9 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future leaveChatRoom(String uidOrRoomId) async {
+Future<dynamic> readData(String key) async {
   // Add your function code here!
-  await ChatService.instance.leave(uidOrRoomId);
+
+  final data = await Data.read(key);
+  return data.data;
 }

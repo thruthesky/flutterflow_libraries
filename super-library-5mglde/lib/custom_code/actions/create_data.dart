@@ -1,4 +1,5 @@
 // Automatic FlutterFlow imports
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -9,7 +10,20 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future leaveChatRoom(String uidOrRoomId) async {
+Future<String> createData(
+  String category,
+  String? title,
+  String? content,
+  List<String>? urls,
+  dynamic data,
+) async {
   // Add your function code here!
-  await ChatService.instance.leave(uidOrRoomId);
+  final ref = await Data.create(
+    category: category,
+    title: title,
+    content: content,
+    urls: urls,
+    data: data,
+  );
+  return ref.key!;
 }

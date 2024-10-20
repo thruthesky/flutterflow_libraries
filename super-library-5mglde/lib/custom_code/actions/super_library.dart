@@ -1391,6 +1391,162 @@ Future<SitePreviewData?> loadSitePreview({
 /// Return true if the chat room is a single chat room.
 bool isSingleChatRoom(roomId) => ChatService.instance.isSingleChatRoom(roomId);
 
+/// [Data] class is a data modeling class of the `/data` node in the Realtime
+/// database.
+///
+/// It is not only including the data modeling but also the basic CRUD like
+/// read, write. Anything else than the data modeling and basic CRUD should be
+/// in the [DataService] class.
+class Data {
+  String key;
+  String uid;
+  int createdAt;
+  int updatedAt;
+  String category;
+  String title;
+  String content;
+  List<String> urls;
+
+  /// [data] holds the JSON data of the data node. This hold the data itself.
+  Map<String, dynamic> data;
+
+  Data({
+    required this.key,
+    required this.uid,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.category,
+    required this.title,
+    required this.content,
+    required this.urls,
+    required this.data,
+  });
+
+  DatabaseReference get ref => Ref.data.child(key);
+
+  /// Field names used for the Firestore document
+  static const field = (
+    key: 'key',
+    uid: 'uid',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    category: 'category',
+    title: 'title',
+    content: 'content',
+    urls: 'urls',
+  );
+
+  /// [value] is a method to get the value from the data.
+  ///
+  /// It returns the value of the key. If the key does not exist, it returns
+  /// the [defaultValue]. It is safer to use this method to get the value from
+  /// the data.
+  ///
+  /// Example:
+  /// ```dart
+  /// assert(updatedData.data['extra'] == 'v1'); // If you are sure, you can access [data] directly.
+  /// assert(updatedData.value('extra', '') == 'v1'); // If you are not sure, you can use [value] method.
+  /// ```
+  T value<T>(String key, T defaultValue) {
+    if (data[key] == null) {
+      return defaultValue;
+    }
+    return data[key] as T;
+  }
+
+  toJson() => data;
+
+  @override
+  String toString() => "Data(key: $key, $data)";
+
+  /// [create] is a method to create the data in the database.
+  ///
+  /// Returns the reference of the data
+  static Future<DatabaseReference> create({
+    required String category,
+    String? title,
+    String? content,
+    List<String>? urls,
+    Map<String, dynamic>? data,
+  }) async {
+    data ??= {};
+    data[field.category] = category;
+    data[field.uid] = myUid;
+    data[field.createdAt] = ServerValue.timestamp;
+    data[field.updatedAt] = ServerValue.timestamp;
+    if (title != null) data[field.title] = title;
+    if (content != null) data[field.content] = content;
+    if (urls != null) data[field.urls] = urls;
+
+    DatabaseReference ref = Ref.data.push();
+
+    // dog('Data.create() at: ${ref.path} with: $data');
+    await ref.set(data);
+
+    return ref;
+  }
+
+  /// [update] is a method to update the data in the database.
+  Future<void> update({
+    String? category,
+    String? title,
+    String? content,
+    List<String>? urls,
+    Map<String, dynamic>? data,
+  }) async {
+    data ??= {};
+
+    //
+    data[field.updatedAt] = ServerValue.timestamp;
+
+    if (category != null) data[field.category] = category;
+    if (title != null) data[field.title] = title;
+    if (content != null) data[field.content] = content;
+    if (urls != null) data[field.urls] = urls;
+
+    // dog('Data.update() at: ${ref.path} with: $data');
+    await ref.update(data);
+  }
+
+  /// [read] is a method to read the data from the database.
+  static Future<Data> read(String key) async {
+    final snapshot = await Ref.data.child(key).get();
+    if (snapshot.exists == false) {
+      throw SuperLibraryException('data/read', 'Data not found');
+    }
+    final value = Map<String, dynamic>.from(snapshot.value as Map);
+
+    return Data(
+      key: key,
+      uid: myUid,
+      createdAt: value[field.createdAt] as int,
+      updatedAt: value[field.updatedAt] as int,
+      category: value[field.category] as String,
+      title: value[field.title] ?? '',
+      content: value[field.content] ?? '',
+      urls: List<String>.from(value[field.urls] ?? []),
+      data: value,
+    );
+  }
+
+  /// [delete] is a method to delete the data from the database.
+  Future<void> delete() async {
+    dog('Data.delete() at: ${ref.path}');
+    await ref.remove();
+  }
+
+  /// [deleteByKey] is a method to delete the data from the database by the key.
+  static Future<void> deleteByKey(String key) async {
+    await Ref.data.child(key).remove();
+  }
+}
+
+/// [DataService] is a service class that provides anything else than the data
+/// modeling and basic CRUD.
+class DataService {
+  //
+}
+
 /// Memory
 ///
 /// A static memory class to store data in memory
@@ -1487,6 +1643,7 @@ class Ref {
   static userPhotoUrl(String uid) => user(uid).child(UserData.field.photoUrl);
   static DatabaseReference get my => user(myUid);
 
+  static DatabaseReference get data => database.ref('data');
   // Returns the chat room reference.
   static DatabaseReference room(String roomId) =>
       ChatService.instance.roomRef(roomId);
@@ -1773,7 +1930,7 @@ class UserData {
   ///
   /// Field names used for the Firestore document
   static const field = (
-    creatAt: 'createdAt',
+    createdAt: 'createdAt',
     displayName: 'displayName',
     displayNameLowerCase: 'displayNameLowerCase',
     photoUrl: 'photoUrl',
@@ -1795,7 +1952,7 @@ class UserData {
 
   Map<String, dynamic> toJson() {
     return {
-      field.creatAt: createdAt,
+      field.createdAt: createdAt,
       field.displayName: displayName,
       field.displayNameLowerCase: displayNameLowerCase,
       field.photoUrl: photoUrl,
@@ -1815,7 +1972,7 @@ class UserData {
   factory UserData.fromJson(Map<dynamic, dynamic> json, String key) {
     final userData = UserData(
       uid: key,
-      createdAt: json[field.creatAt] ?? DateTime.now().millisecondsSinceEpoch,
+      createdAt: json[field.createdAt] ?? DateTime.now().millisecondsSinceEpoch,
       displayName: json[field.displayName] ?? '',
       displayNameLowerCase: json[field.displayNameLowerCase] ?? '',
       photoUrl: json[field.photoUrl] ?? '',
@@ -2031,7 +2188,7 @@ class UserService {
           stamp = DateTime.now().millisecondsSinceEpoch;
         }
         Map<String, dynamic> update = <String, dynamic>{
-          UserData.field.creatAt: stamp,
+          UserData.field.createdAt: stamp,
           UserData.field.displayName: data['display_name'],
           UserData.field.displayNameLowerCase:
               (data['display_name'] ?? '').toLowerCase(),
