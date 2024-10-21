@@ -122,12 +122,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Write test code here
   void test() async {
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return DataTestScreen();
-      },
-    );
+    // showGeneralDialog(
+    //   context: context,
+    //   pageBuilder: (_, __, ___) {
+    //     return DataTestScreen();
+    //   },
+    // );
   }
 
   @override
@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //
         return Center(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -273,71 +273,24 @@ class _MyHomePageState extends State<MyHomePage> {
                       ref: myRef.child(UserData.field.displayName),
                       builder: (v, r) => Text('Name: $v')),
                   Text('UID: ${FirebaseAuth.instance.currentUser!.uid}'),
-
-                  ElevatedButton(
-                      onPressed: () {
-                        showGeneralDialog(
-                          context: context,
-                          pageBuilder: (_, __, ___) {
-                            return const ProfileScreen();
-                          },
-                        );
-                      },
-                      child: const Text('Profile Edit')),
-                  // ChatRoomIcon(
-                  //   roomId: '-O9JXcdeMWOaCxOMiKBP',
-                  //   width: 60,
-                  //   height: 60,
-                  //   radius: 24,
-                  // ),
-
-                  ElevatedButton(
-                    onPressed: () => showGeneralDialog(
-                        context: context,
-                        pageBuilder: (_, __, ___) => BlockUserListScreen()),
-                    child: Text("Show blocked Users"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final String id = 'id${Random().nextInt(1000) + 9999}';
-
-                      for (int i = 0; i < 10; i++) {
-                        final String email = '$id-$i@test.com';
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                          email: email,
-                          password: '12345a,*',
-                        );
-                        String uid = FirebaseAuth.instance.currentUser!.uid;
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(uid)
-                            .set({
-                          'display_name': 'User-$id',
-                          'created_time': FieldValue.serverTimestamp(),
-                          'email': email,
-                          'photo_url': 'https://picsum.photos/id/${i}0/200/300',
-                        });
-                        print(
-                          'User $email created with uid: $uid',
-                        );
-                      }
-                    },
-                    child: const Text('Create 10 test users'),
-                  ),
                   Wrap(
-                    alignment: WrapAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: () async {
+                        onPressed: () {
                           showGeneralDialog(
                             context: context,
-                            pageBuilder: (context, a1, a2) {
-                              return const ChatRoomListScreen();
+                            pageBuilder: (_, __, ___) {
+                              return const ProfileScreen();
                             },
                           );
                         },
-                        child: const Text('Chat Rooms'),
+                        child: const Text('Profile Edit'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) => BlockUserListScreen()),
+                        child: Text("Blocked Users"),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -345,116 +298,183 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                         child: const Text('Sign Out'),
                       ),
+                      ElevatedButton(
+                          onPressed: () => showGeneralDialog(
+                                context: context,
+                                pageBuilder: (_, __, ___) {
+                                  return const UserListViewScreen();
+                                },
+                              ),
+                          child: const Text('Default User List')),
+                      ElevatedButton(
+                          onPressed: () => showGeneralDialog(
+                                context: context,
+                                pageBuilder: (_, __, ___) {
+                                  return const HorizontalUserListViewScreen();
+                                },
+                              ),
+                          child: const Text('Horizontal User List')),
+                      ElevatedButton(
+                          onPressed: () => showGeneralDialog(
+                                context: context,
+                                pageBuilder: (_, __, ___) {
+                                  return const CustomUserListViewScreen();
+                                },
+                              ),
+                          child: const Text('Custom User List')),
+                      ElevatedButton(
+                        onPressed: () => showGeneralDialog(
+                          context: context,
+                          pageBuilder: (_, __, ___) {
+                            return const CustomComponentUserListViewScreen();
+                          },
+                        ),
+                        child:
+                            const Text('Custom Component User List - Vertical'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => showGeneralDialog(
+                          context: context,
+                          pageBuilder: (_, __, ___) {
+                            return const HorizontalCustomComponentUserListViewScreen();
+                          },
+                        ),
+                        child: const Text(
+                            'Custom Component User List - Horizontal'),
+                      ),
                     ],
                   ),
-                  const Row(
+                  Text('Unit Tests & Integration Tests'),
+                  Divider(),
+                  Wrap(
                     children: [
-                      Text('No. of new messages: '),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final String id =
+                              'id${Random().nextInt(1000) + 9999}';
+
+                          for (int i = 0; i < 10; i++) {
+                            final String email = '$id-$i@test.com';
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: email,
+                              password: '12345a,*',
+                            );
+                            String uid = FirebaseAuth.instance.currentUser!.uid;
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(uid)
+                                .set({
+                              'display_name': 'User-$id',
+                              'created_time': FieldValue.serverTimestamp(),
+                              'email': email,
+                              'photo_url':
+                                  'https://picsum.photos/id/${i}0/200/300',
+                            });
+                            print(
+                              'User $email created with uid: $uid',
+                            );
+                          }
+                        },
+                        child: const Text('Create 10 test users'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) {
+                              return const DataTestScreen();
+                            },
+                          );
+                        },
+                        child: const Text('Data Tests'),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text('Chat, '),
+                      Text('New Messages: '),
                       ChatNewMessageCounter(),
                     ],
                   ),
-                  ElevatedButton(
-                      onPressed: () => showGeneralDialog(
-                            context: context,
-                            pageBuilder: (_, __, ___) {
-                              return const UserListViewScreen();
-                            },
-                          ),
-                      child: const Text('Default User List View')),
-                  ElevatedButton(
-                      onPressed: () => showGeneralDialog(
-                            context: context,
-                            pageBuilder: (_, __, ___) {
-                              return const HorizontalUserListViewScreen();
-                            },
-                          ),
-                      child: const Text('Horizontal User List View')),
-                  ElevatedButton(
-                      onPressed: () => showGeneralDialog(
-                            context: context,
-                            pageBuilder: (_, __, ___) {
-                              return const CustomUserListViewScreen();
-                            },
-                          ),
-                      child: const Text('Custom User List View')),
-                  ElevatedButton(
-                    onPressed: () => showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) {
-                        return const CustomComponentUserListViewScreen();
-                      },
-                    ),
-                    child: const Text(
-                        'Custom Component User List View - Vertical'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) {
-                        return const HorizontalCustomComponentUserListViewScreen();
-                      },
-                    ),
-                    child: const Text(
-                        'Custom Component User List View - Horizontal'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) {
-                        return const ChatRoomListScreen();
-                      },
-                    ),
-                    child: const Text('My chat room list'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) {
-                        return const OpenChatRoomListScreen();
-                      },
-                    ),
-                    child: const Text('Open chat room list'),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        showGeneralDialog(
+                  Divider(),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => showGeneralDialog(
                           context: context,
                           pageBuilder: (_, __, ___) {
-                            return const CommonSafeAreaScreen();
+                            return const ChatRoomListScreen();
                           },
-                        );
-                      },
-                      child: const Text('CommonSafeArea')),
-                  ElevatedButton(
-                      onPressed: () {
-                        showGeneralDialog(
+                        ),
+                        child: const Text('My chat rooms'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => showGeneralDialog(
                           context: context,
                           pageBuilder: (_, __, ___) {
-                            return DataScreen();
+                            return const OpenChatRoomListScreen();
                           },
-                        );
-                      },
-                      child: Text('Data')),
-                  ElevatedButton(
-                      onPressed: () {
-                        showGeneralDialog(
-                          context: context,
-                          pageBuilder: (_, __, ___) {
-                            return const SitePreviewScreen();
+                        ),
+                        child: const Text('Open chat rooms'),
+                      ),
+                    ],
+                  ),
+                  Text('Data, Comment & Relations'),
+                  Divider(),
+                  Wrap(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) {
+                              return DataScreen();
+                            },
+                          );
+                        },
+                        child: Text('Data'),
+                      ),
+                    ],
+                  ),
+                  Text('ETC'),
+                  Divider(),
+                  Wrap(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            showGeneralDialog(
+                              context: context,
+                              pageBuilder: (_, __, ___) {
+                                return const CommonSafeAreaScreen();
+                              },
+                            );
                           },
-                        );
-                      },
-                      child: Text('Site Preview')),
-                  ElevatedButton(
-                      onPressed: () async {
-                        final String url = 'https://www.google.com';
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(Uri.parse(url));
-                        } else {
-                          print('Could not launch $url');
-                        }
-                      },
-                      child: Text('Launch a URL')),
+                          child: const Text('CommonSafeArea')),
+                      ElevatedButton(
+                          onPressed: () {
+                            showGeneralDialog(
+                              context: context,
+                              pageBuilder: (_, __, ___) {
+                                return const SitePreviewScreen();
+                              },
+                            );
+                          },
+                          child: Text('Site Preview')),
+                      ElevatedButton(
+                          onPressed: () async {
+                            final String url = 'https://www.google.com';
+                            if (await canLaunchUrl(Uri.parse(url))) {
+                              await launchUrl(Uri.parse(url));
+                            } else {
+                              print('Could not launch $url');
+                            }
+                          },
+                          child: Text('Launch a URL')),
+                    ],
+                  )
                 ],
               ),
             ),

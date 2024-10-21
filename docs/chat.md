@@ -2,43 +2,47 @@
 
 
 - [Chat](#chat)
-  - [Chat Logic](#chat-logic)
-    - [User Invitation and Consent](#user-invitation-and-consent)
-    - [Chat Room Structure](#chat-room-structure)
-      - [Example of `users` Field](#example-of-users-field)
-    - [How It Works](#how-it-works)
-  - [Chat Room](#chat-room)
-    - [How to Create a Chat Room](#how-to-create-a-chat-room)
-    - [How to Update a Chat Room](#how-to-update-a-chat-room)
-    - [Example](#example)
-  - [How to list my Chat Room List](#how-to-list-my-chat-room-list)
-    - [Customizing Chat Room List with Custom Code](#customizing-chat-room-list-with-custom-code)
-    - [Customizing Chat Room List with Component](#customizing-chat-room-list-with-component)
-  - [How to list Open Chat Rooms](#how-to-list-open-chat-rooms)
-    - [Customizing Open Chat Room List with Custom Code](#customizing-open-chat-room-list-with-custom-code)
-    - [Customizing Open Chat Room List with Component](#customizing-open-chat-room-list-with-component)
-  - [Opening a chat room screen](#opening-a-chat-room-screen)
-  - [Inviting a user into a chat room](#inviting-a-user-into-a-chat-room)
-  - [Chat room leave](#chat-room-leave)
-  - [Logic of blocking user](#logic-of-blocking-user)
-  - [UI and UX](#ui-and-ux)
-  - [Known Issues](#known-issues)
-    - [No of Chat room message for blocked user](#no-of-chat-room-message-for-blocked-user)
+- [Chat Logic](#chat-logic)
+  - [User Invitation and Consent](#user-invitation-and-consent)
+  - [Chat Room Structure](#chat-room-structure)
+    - [Example of `users` Field](#example-of-users-field)
+  - [How It Works](#how-it-works)
+- [Chat Room](#chat-room)
+  - [How to Create a Chat Room](#how-to-create-a-chat-room)
+  - [How to Update a Chat Room](#how-to-update-a-chat-room)
+  - [Example](#example)
+- [How to list my Chat Room List](#how-to-list-my-chat-room-list)
+  - [Customizing Chat Room List with Custom Code](#customizing-chat-room-list-with-custom-code)
+  - [Customizing Chat Room List with Component](#customizing-chat-room-list-with-component)
+- [How to list Open Chat Rooms](#how-to-list-open-chat-rooms)
+  - [Customizing Open Chat Room List with Custom Code](#customizing-open-chat-room-list-with-custom-code)
+  - [Customizing Open Chat Room List with Component](#customizing-open-chat-room-list-with-component)
+- [Opening a chat room screen](#opening-a-chat-room-screen)
+- [Inviting a user into a chat room](#inviting-a-user-into-a-chat-room)
+- [Chat room leave](#chat-room-leave)
+- [Logic of blocking user](#logic-of-blocking-user)
+- [UI and UX](#ui-and-ux)
+- [Widgets](#widgets)
+  - [ChatMessageListView](#chatmessagelistview)
+- [Developer's guide](#developers-guide)
+  - [Testing chat room icon](#testing-chat-room-icon)
+- [Known Issues](#known-issues)
+  - [No of Chat room message for blocked user](#no-of-chat-room-message-for-blocked-user)
 
 
 
 
-## Chat Logic
+# Chat Logic
 
-### User Invitation and Consent
+## User Invitation and Consent
 
 We prevent bad users from sending messages to good users.
 
-### Chat Room Structure
+## Chat Room Structure
 
 Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys and a boolean as values.
 
-#### Example of `users` Field
+### Example of `users` Field
 
 ```json
 {
@@ -49,7 +53,7 @@ Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys
 }
 ```
 
-### How It Works
+## How It Works
 
 1. **Creating a Chat Room**:
     1. When User A starts a chat with User B, a chat room is created with the `users` field.
@@ -66,9 +70,9 @@ Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys
 
 This process ensures that users have control over who can send them messages and join their chat rooms.
 
-## Chat Room
+# Chat Room
 
-### How to Create a Chat Room
+## How to Create a Chat Room
 
 1. **Open Create Chat Room Dialog**:
 2. **Call the `createChatRoom` custom action**
@@ -76,7 +80,7 @@ This process ensures that users have control over who can send them messages and
 3. **Open the Chat Room**:
     1. After creating the chat room, open it for the user.
 
-### How to Update a Chat Room
+## How to Update a Chat Room
 
 1. **Open Update Chat Room Dialog**:
 2. Call the `updateChatRoom` custom action.
@@ -88,7 +92,7 @@ This process ensures that users have control over who can send them messages and
 
 
 
-### Example
+## Example
 
 Here is an example of source code for creating or updating a chat room.
 
@@ -131,7 +135,7 @@ ElevatedButton(
 
 
 
-## How to list my Chat Room List
+# How to list my Chat Room List
 
 
 1. Add **ChatRoomListView** custom widget into body in a screen
@@ -141,7 +145,7 @@ ElevatedButton(
 
 
 
-### Customizing Chat Room List with Custom Code
+## Customizing Chat Room List with Custom Code
 
 Below is a sample code of how you can use the chat room list view widget.
 
@@ -158,7 +162,7 @@ ChatRoomListView(
 
 
 
-### Customizing Chat Room List with Component
+## Customizing Chat Room List with Component
 
 1. Make a Component with your own Design
 
@@ -185,14 +189,14 @@ Component.chatRoomListTile = (join) => ChatRoomListTileWidget(
 
 
 
-## How to list Open Chat Rooms
+# How to list Open Chat Rooms
 
 1. Add OpenChatRoomListView custom widget into body in a screen
 
 2. Use onTap action to open a chat room.
 
 
-### Customizing Open Chat Room List with Custom Code
+## Customizing Open Chat Room List with Custom Code
 
 Below is a sample code of how you can use the chat room list view widget.
 
@@ -209,7 +213,7 @@ OpenChatRoomListView(
 )
 ```
 
-### Customizing Open Chat Room List with Component
+## Customizing Open Chat Room List with Component
 
 1. Make a Component with your own Design
 
@@ -238,7 +242,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
-## Opening a chat room screen
+# Opening a chat room screen
 
 1. Create a chat room screen with parameter roomId as String
 
@@ -254,7 +258,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
-## Inviting a user into a chat room
+# Inviting a user into a chat room
 
 1. Add a button on a group chat room to open a user-invite screen.
    1. Pass the chat room id over the user-invite screen.
@@ -266,7 +270,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
-## Chat room leave
+# Chat room leave
 
 - When user-A leaves the chat room with user-B,
   - The message from user-B will no longer delivered to user-A
@@ -279,7 +283,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
-## Logic of blocking user
+# Logic of blocking user
 
 - When a User-A blocks another User-B, 
     - The `blockUser` custom action makes the User-A leaves the chat room with User-B if there is a chat room between A and B.
@@ -290,7 +294,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 
 
 
-## UI and UX
+# UI and UX
 
 - The login user cannot join the chat room and cannot send message to the blocked users.
     - The super library will throw exceptions
@@ -302,16 +306,34 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
       - The chat message list view may still display chat messages and the it may look like sending message works.
 
 
+# Widgets
+
+## ChatMessageListView
+
+
+
+# Developer's guide
+
+## Testing chat room icon
+
+Simply pass the chat room id which has chat room icon url and you will see how it works.
+
+```dart
+ChatRoomIcon(
+  roomId: '-O9JXcdeMWOaCxOMiKBP',
+  width: 60,
+  height: 60,
+  radius: 24,
+),
+```
 
 
 
 
+# Known Issues
 
 
-## Known Issues
-
-
-### No of Chat room message for blocked user
+## No of Chat room message for blocked user
 
 - Login user is A, the other user id B
     - A sent 2 message to B
