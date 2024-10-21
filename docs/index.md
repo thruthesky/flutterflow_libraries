@@ -27,28 +27,28 @@ No. The Super Library can be used with any Flutter project. While it is built sp
 
 
 
-### Issues with Firestore
+## Issues with Firestore
 
 - **Document Reads**: Reading one document often requires reading additional related documents, like user information.
 - **Data Usage**: Firestore requires downloading entire documents, increasing data usage and battery drain for end-users.
 
-### Advantages of Realtime Database
+## Advantages of Realtime Database
 
 - **Efficiency**: Faster, simpler, and cheaper than Firestore.
 - **Selective Data**: Allows downloading only specific fields.
 - **Ideal Use**: Suitable for large chat apps or social community apps with high read/write operations.
 
-### Current Limitations
+## Current Limitations
 
 - **Widget Builder**: Supported only for Components, not Custom Widgets. This makes integration more complex.
 - **Marketplace**: Super library may not be published in the Marketplace as it uses Firebase, which is against FlutterFlow's principles.
 
-### Want to Use the Super Library?
+## Want to Use the Super Library?
 
 Until the Super Library is published to the marketplace, you can:
 
-- **Copy the Super Library**: Get a copy and create your own version.
-- **Add as a Dependency**: Directly add the Super Library as a dependency to your project.
+- **Copy the Super Library**: Get a copy and create your own version. It's an open source.
+- **Add as a Dependency**: Directly add the Super Library as a dependency to your project. You may ask me to add your account in the super library project for read preveileges.
 
 If you need help, email me at: thruthesky@gmail.com
 
