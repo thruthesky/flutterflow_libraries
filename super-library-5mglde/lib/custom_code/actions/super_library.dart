@@ -771,7 +771,8 @@ class ChatService {
     // Get the cached user data
     final my = await UserData.get(myUid);
 
-    // Save/create a chat message into chat room.
+    // Send(save/create) a chat message into chat room.
+    //
     final message = ChatMessage.json(
       senderUid: myUid,
       displayName: my?.displayName,

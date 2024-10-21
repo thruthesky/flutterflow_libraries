@@ -27,11 +27,14 @@ class ChatMessageListView extends StatefulWidget {
     this.width,
     this.height,
     required this.uidOrRoomId,
+    this.onTapProfilePhoto,
   });
 
   final double? width;
   final double? height;
   final String uidOrRoomId;
+  final Future Function(String uid, String displayName, String photoUrl)?
+      onTapProfilePhoto;
 
   @override
   State<ChatMessageListView> createState() => _ChatMessageListViewState();
@@ -99,14 +102,29 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                   // This row aligns the Photo and Name at top
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (isNotMine) ...[
-                      UserAvatar(
-                        uid: message.senderUid,
-                        width: iconSize,
-                        height: iconSize,
+                    if (isNotMine)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () async {
+                          if (widget.onTapProfilePhoto != null) {
+                            await widget.onTapProfilePhoto!(
+                              message.senderUid,
+                              message.displayName ?? '',
+                              message.photoUrl ?? '',
+                            );
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            UserAvatar(
+                              uid: message.senderUid,
+                              width: iconSize,
+                              height: iconSize,
+                            ),
+                            SizedBox(width: iconPadding),
+                          ],
+                        ),
                       ),
-                      SizedBox(width: iconPadding),
-                    ],
                     Flexible(
                       child: Row(
                         // This row aligns the bubble and the time at their bottom.

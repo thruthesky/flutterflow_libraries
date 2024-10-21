@@ -6,7 +6,8 @@
   - [User Invitation and Consent](#user-invitation-and-consent)
   - [Chat Room Structure](#chat-room-structure)
     - [Example of `users` Field](#example-of-users-field)
-  - [How It Works](#how-it-works)
+  - [How Chat Room Works](#how-chat-room-works)
+  - [Sending a chat message](#sending-a-chat-message)
 - [Chat Room](#chat-room)
   - [How to Create a Chat Room](#how-to-create-a-chat-room)
   - [How to Update a Chat Room](#how-to-update-a-chat-room)
@@ -24,6 +25,7 @@
 - [UI and UX](#ui-and-ux)
 - [Widgets](#widgets)
   - [ChatMessageListView](#chatmessagelistview)
+    - [Callback functions on ChatMessageListView](#callback-functions-on-chatmessagelistview)
 - [Developer's guide](#developers-guide)
   - [Testing chat room icon](#testing-chat-room-icon)
 - [Known Issues](#known-issues)
@@ -53,7 +55,7 @@ Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys
 }
 ```
 
-## How It Works
+## How Chat Room Works
 
 1. **Creating a Chat Room**:
     1. When User A starts a chat with User B, a chat room is created with the `users` field.
@@ -69,6 +71,13 @@ Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys
     2. If User B accepts, `B` is set to `true`, and the confirmation dialog will no longer appear.
 
 This process ensures that users have control over who can send them messages and join their chat rooms.
+
+
+## Sending a chat message
+
+- Whenever a chat message is sent, it contains the sender's uid, displayName, photoUrl if the user has.
+
+
 
 # Chat Room
 
@@ -309,6 +318,13 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 # Widgets
 
 ## ChatMessageListView
+
+
+### Callback functions on ChatMessageListView
+
+- **onTapProfilePhoto**: This callback function be called a user taps on another user's profile photo. The callback will deliver uid, dsiplayName, photoUrl of the other user.
+
+
 
 
 
