@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_example/components/chat_room_list_tile_widget.dart';
 import 'package:super_example/components/open_chat_room_list_tile_widget.dart';
+import 'package:super_example/components/post_card.dart';
 import 'package:super_example/screens/chat/chat_room.list.screen.dart';
 // import 'package:super_example/chat_room.screen.dart';
 import 'package:super_example/firebase_options.dart';
@@ -84,7 +85,7 @@ void main() async {
   //       allMembersCanInvite: room.allMembersCanInvite,
   //     );
 
-  // Component.dataCard = (Data data) =>
+  // Component.dataCard = (Data data) => PostCard(data: data.data);
 
   runApp(const MyApp());
 }

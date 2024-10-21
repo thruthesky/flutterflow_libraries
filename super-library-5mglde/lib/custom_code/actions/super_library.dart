@@ -1412,7 +1412,7 @@ class Data {
   List<String> urls;
 
   /// [data] holds the JSON data of the data node. This hold the data itself.
-  Map<String, dynamic> data;
+  Map<dynamic, dynamic> data;
 
   Data({
     required this.key,
@@ -1464,11 +1464,11 @@ class Data {
   String toString() => "Data(key: $key, $data)";
 
   factory Data.fromSnapshot(DataSnapshot snapshot) {
-    final data = snapshot.value as Map<String, dynamic>;
+    final data = snapshot.value as Map<dynamic, dynamic>;
     return Data.fromJson(data, snapshot.key!);
   }
 
-  factory Data.fromJson(Map<String, dynamic> data, String key) {
+  factory Data.fromJson(Map<dynamic, dynamic> data, String key) {
     return Data(
       key: key,
       uid: data[field.uid] as String,
@@ -1478,7 +1478,7 @@ class Data {
       title: data[field.title] as String,
       content: data[field.content] as String,
       urls: List<String>.from(data[field.urls] ?? []),
-      data: data,
+      data: {...data, field.key: key},
     );
   }
 
@@ -1490,7 +1490,7 @@ class Data {
     String? title,
     String? content,
     List<String>? urls,
-    Map<String, dynamic>? data,
+    Map<dynamic, dynamic>? data,
   }) async {
     data ??= {};
     data[field.category] = category;

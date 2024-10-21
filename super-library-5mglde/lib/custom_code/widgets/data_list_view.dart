@@ -17,11 +17,17 @@ class DataListView extends StatefulWidget {
     this.width,
     this.height,
     required this.category,
+    this.onTapProfilePhoto,
+    this.onTap,
   });
 
   final double? width;
   final double? height;
   final String category;
+
+  final Future Function(String uid, String displayName, String photoUrl)?
+      onTapProfilePhoto;
+  final Future Function(dynamic data)? onTap;
 
   @override
   State<DataListView> createState() => _DataListViewState();
@@ -39,37 +45,68 @@ class _DataListViewState extends State<DataListView> {
       builder: (snapshot, fetchMore) {
         return ListView.separated(
           itemCount: snapshot.docs.length,
-          separatorBuilder: (context, index) => const Divider(
-            height: 0,
-          ),
+          separatorBuilder: (context, index) => SizedBox.shrink(),
           itemBuilder: (context, index) {
             fetchMore(index);
             final DataSnapshot doc = snapshot.docs[index];
             final Data data = Data.fromSnapshot(doc);
 
-            return Component.dataCard?.call(data) ??
-                Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.title,
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => widget.onTap?.call(data.data),
+                child: Component.dataCard?.call(data) ??
+                    Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => widget.onTapProfilePhoto?.call(
+                                          data.uid,
+                                          Memory.get<String>(
+                                                  'displayName-${data.uid}') ??
+                                              '',
+                                          Memory.get<String>(
+                                                  'photoUrl-${data.uid}') ??
+                                              '',
+                                        ),
+                                    child: UserAvatar(uid: data.uid)),
+                                SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    DisplayName(uid: data.uid),
+                                    Text(
+                                      data.title,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              data.content,
+                            ),
+                            SizedBox(height: 16),
+                          ],
                         ),
-                        Text(
-                          data.content,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
+              ),
+            );
           },
         );
       },

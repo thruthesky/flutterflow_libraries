@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_example/screens/data/data.create.screen.dart';
 import 'package:super_library/custom_code/widgets/index.dart';
 
 class DataListScreen extends StatelessWidget {
@@ -12,6 +13,19 @@ class DataListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('DataList'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await showGeneralDialog(
+                context: context,
+                pageBuilder: (context, a1, a2) {
+                  return DataCreateScreen(category: category);
+                },
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: DataListView(
         category: category,
