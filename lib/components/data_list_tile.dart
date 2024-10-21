@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:super_library/custom_code/widgets/index.dart';
 
-class PostCard extends StatefulWidget {
-  const PostCard({
+class DataListTile extends StatefulWidget {
+  const DataListTile({
     super.key,
     required this.data,
   });
@@ -12,10 +12,10 @@ class PostCard extends StatefulWidget {
   final dynamic data;
 
   @override
-  State<PostCard> createState() => _PostCardState();
+  State<DataListTile> createState() => _DataListTileState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _DataListTileState extends State<DataListTile> {
   @override
   void setState(VoidCallback callback) {
     super.setState(callback);

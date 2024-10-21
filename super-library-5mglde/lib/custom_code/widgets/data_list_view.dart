@@ -51,61 +51,58 @@ class _DataListViewState extends State<DataListView> {
             final DataSnapshot doc = snapshot.docs[index];
             final Data data = Data.fromSnapshot(doc);
 
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => widget.onTap?.call(data.data),
-                child: Component.dataCard?.call(data) ??
-                    Card(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () => widget.onTapProfilePhoto?.call(
-                                          data.uid,
-                                          Memory.get<String>(
-                                                  'displayName-${data.uid}') ??
-                                              '',
-                                          Memory.get<String>(
-                                                  'photoUrl-${data.uid}') ??
-                                              '',
-                                        ),
-                                    child: UserAvatar(uid: data.uid)),
-                                SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    DisplayName(uid: data.uid),
-                                    Text(
-                                      data.title,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              data.content,
-                            ),
-                            SizedBox(height: 16),
-                          ],
-                        ),
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onTap?.call(data.data),
+              child: Component.dataListTile?.call(data) ??
+                  Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () => widget.onTapProfilePhoto?.call(
+                                        data.uid,
+                                        Memory.get<String>(
+                                                'displayName-${data.uid}') ??
+                                            '',
+                                        Memory.get<String>(
+                                                'photoUrl-${data.uid}') ??
+                                            '',
+                                      ),
+                                  child: UserAvatar(uid: data.uid)),
+                              SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  DisplayName(uid: data.uid),
+                                  Text(
+                                    data.title,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            data.content,
+                          ),
+                          SizedBox(height: 16),
+                        ],
                       ),
                     ),
-              ),
+                  ),
             );
           },
         );

@@ -746,11 +746,8 @@ class ChatService {
   DatabaseReference roomRef(String roomId) =>
       database.ref('chat/rooms').child(roomId);
 
-  DatabaseReference get mySettingRef => FirebaseDatabase.instance
-      .ref()
-      .child('chat')
-      .child('settings')
-      .child(myUid);
+  DatabaseReference get mySettingRef =>
+      database.ref().child('chat').child('settings').child(myUid);
 
   /// Send a message to the chat room.
   ///
@@ -1287,7 +1284,9 @@ class Component {
   static Widget Function(ChatJoin)? chatRoomListTile;
   static Widget Function(ChatRoom)? openChatRoomListTile;
   static Widget Function(ChatMessage)? chatMessageListTile;
-  static Widget Function(Data)? dataCard;
+
+  /// dataListTile is for displaying data in the DataListView.
+  static Widget Function(Data)? dataListTile;
 }
 
 /// User references --------------------------------------------------------------------------------
