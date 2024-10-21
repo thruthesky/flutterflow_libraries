@@ -125,22 +125,55 @@ Example representation:
 
 ## Custom design on data list screen
 
-- If you want to design with your component, you can hook your component into super library.
-- Create a component named `DataCard` under the `components/data` folder. See below;
+- If you want to customize the design in `DataListView` with your component, you can hook your component into super library.
+    - The purpose of the `DataListView` is to display the list of data with a short summary of each data entries. But it's really upto you what information you want to show in your custom design.
+- Create a component named `DataListTile` under the `components/data` folder. See below;
 
-![image.png](./images/data_card_widget_tree.png)
+![image.png](./images/data_list_tile_widget_tree.png)
 
-
-- Add the `data` parameter of `JSON` type to the `DataCard` component.
-
-
+- Add the `data` parameter of `JSON` type to the `DataListTile` component.
 - Then, you need to hook your component into super library by creating a custom action like below;
 
 ```dart
-data_card_widget_tree.png
+import 'package:super_library_5mglde/custom_code/actions/super_library.dart';
+import '/components/data/data_list_tile/data_list_tile_widget.dart';
+
+Future hookDataCardComponent() async {
+  // Add your function code here!
+  Component.dataListTile = (data) => DataListTileWidget(data: data.data);
+  return;
+}
+
 ```
 
-- If you want to customize 
+### Display data value in custom design
+
+- Data passed to your component is in JSON. So, you can use the `JSON path` to display what's in the data. For instance
+    - `$.title`: the title of the data
+    - `$.content`: the content of the data
+    - `$.uid`: the uid of the creator.
+        - You can display the creator's avatar by passing the uid to `UserAvatar`.
+        - You can dispaly the creator's display name by passing the uid to `DisplayName`.
+    - `$.createdAt`: the timestamp of the data creation.
+    - `$.urls`: the string array of urls that are saved with the data.
+    - `$.category`: the category.
+
+
+
+- You can add whatever key/value pairs as much as you want.
+    - Below is an example of showing the custom key/value data.
+
+![image.png](./images/data_display_custom_data.png)
+
+
+
+### Custom design and actions
+
+- If you are customzing design with your own component, you need to implement the behaviour of taps profile photo, title, etc.
+
+
+
+
 
 
 ## Developer's guide line
