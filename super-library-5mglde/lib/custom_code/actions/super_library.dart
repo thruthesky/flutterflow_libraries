@@ -1285,6 +1285,7 @@ class Component {
   static Widget Function(ChatJoin)? chatRoomListTile;
   static Widget Function(ChatRoom)? openChatRoomListTile;
   static Widget Function(ChatMessage)? chatMessageListTile;
+  static Widget Function(Data)? dataCard;
 }
 
 /// User references --------------------------------------------------------------------------------
@@ -1459,6 +1460,25 @@ class Data {
 
   @override
   String toString() => "Data(key: $key, $data)";
+
+  factory Data.fromSnapshot(DataSnapshot snapshot) {
+    final data = snapshot.value as Map<String, dynamic>;
+    return Data.fromJson(data, snapshot.key!);
+  }
+
+  factory Data.fromJson(Map<String, dynamic> data, String key) {
+    return Data(
+      key: key,
+      uid: data[field.uid] as String,
+      createdAt: data[field.createdAt] as int,
+      updatedAt: data[field.updatedAt] as int,
+      category: data[field.category] as String,
+      title: data[field.title] as String,
+      content: data[field.content] as String,
+      urls: List<String>.from(data[field.urls] ?? []),
+      data: data,
+    );
+  }
 
   /// [create] is a method to create the data in the database.
   ///

@@ -125,6 +125,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "data_list_view.dart": {
+    "old_identifier_name": "DataListView",
+    "new_identifier_name": "DataListView",
+    "type": "W",
+    "is_deleted": false
+  },
   "display_name.dart": {
     "old_identifier_name": "DisplayName",
     "new_identifier_name": "DisplayName",

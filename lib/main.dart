@@ -84,6 +84,8 @@ void main() async {
   //       allMembersCanInvite: room.allMembersCanInvite,
   //     );
 
+  // Component.dataCard = (Data data) =>
+
   runApp(const MyApp());
 }
 

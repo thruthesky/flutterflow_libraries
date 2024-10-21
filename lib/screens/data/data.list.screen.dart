@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_library/custom_code/widgets/index.dart';
 
 class DataListScreen extends StatelessWidget {
   static const String routeName = '/DataList';
@@ -12,7 +13,9 @@ class DataListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('DataList'),
       ),
-      body: DataListView(),
+      body: DataListView(
+        category: category,
+      ),
     );
   }
 }

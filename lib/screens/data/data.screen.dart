@@ -32,7 +32,9 @@ class _DataScreenState extends State<DataScreen> {
             onPressed: () => showGeneralDialog(
               context: context,
               pageBuilder: (_, __, ___) {
-                return DataListScreen();
+                return DataListScreen(
+                  category: 'qna',
+                );
               },
             ),
             child: Text("QnA"),
@@ -41,7 +43,9 @@ class _DataScreenState extends State<DataScreen> {
             onPressed: () => showGeneralDialog(
               context: context,
               pageBuilder: (_, __, ___) {
-                return DataListScreen();
+                return DataListScreen(
+                  category: 'discussion',
+                );
               },
             ),
             child: Text("Discussion"),
