@@ -36,47 +36,58 @@ class _UserAvatarState extends State<UserAvatar> {
   final double _defaultSize = 50;
   @override
   Widget build(BuildContext context) {
-    dog('initialData: ${Memory.get<UserData>(widget.uid)?.toJson()}');
+    return BlockedUser(
+        uid: widget.uid,
+        builder: (blocked) {
+          /// Is the user blocked?
+          if (blocked) {
+            return tempAvatar(icon: Icons.person_off);
+          }
 
-    String url = '';
-    final Map<String, dynamic>? data =
-        Memory.get<UserData>(widget.uid)?.toJson();
-    if (data != null) {
-      url = data[UserData.field.photoUrl] as String;
-    }
+          dog('initialData: ${Memory.get<UserData>(widget.uid)?.toJson()}');
 
-    return Value(
-      ref: UserService.instance
-          .databaseUserRef(widget.uid)
-          .child(UserData.field.photoUrl),
-      initialData: url,
-      sync: true,
-      builder: (url, r) {
-        if (url == null || url.isEmpty) {
-          return anonymousAvatar;
-        }
+          /// Prepare: Get the user's photo URL
+          String url = '';
+          final Map<String, dynamic>? data =
+              Memory.get<UserData>(widget.uid)?.toJson();
+          if (data != null) {
+            url = data[UserData.field.photoUrl] as String;
+          }
 
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(widget.radius ?? _defaultSize),
-          child: CachedNetworkImage(
-            imageUrl: url,
-            width: widget.width ?? _defaultSize,
-            height: widget.height ?? _defaultSize,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
+          return Value(
+            ref: UserService.instance
+                .databaseUserRef(widget.uid)
+                .child(UserData.field.photoUrl),
+            initialData: url,
+            sync: true,
+            builder: (url, r) {
+              if (url == null || url.isEmpty) {
+                return tempAvatar();
+              }
+
+              return ClipRRect(
+                borderRadius:
+                    BorderRadius.circular(widget.radius ?? _defaultSize),
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  width: widget.width ?? _defaultSize,
+                  height: widget.height ?? _defaultSize,
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          );
+        });
   }
 
-  Widget get anonymousAvatar => ClipRRect(
+  Widget tempAvatar({IconData? icon}) => ClipRRect(
         borderRadius: BorderRadius.circular(widget.radius ?? _defaultSize),
         child: Container(
           color: FlutterFlowTheme.of(context).alternate,
           width: widget.width ?? _defaultSize,
           height: widget.height ?? _defaultSize,
           child: Icon(
-            Icons.person,
+            icon ?? Icons.person,
             size: (widget.width == null ? _defaultSize : widget.width!) * 0.64,
             color: FlutterFlowTheme.of(context).primaryText,
           ),

@@ -89,7 +89,7 @@ Let's multiply the cost by 2.
 
 ### Conclusion
 
-Your app will read even more documents in various scenarios, and you also have to pay for writing documents.
+Your app will read even more documents in various scenarios, and you also have to pay for writing documents if your app is using Firestore.
 
 With the Realtime Database, reading documents is free. Yes, there is no cost at all. Writing is also free.
 

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:super_example/screens/chat/chat_invite_user.screen.dart';
 import 'package:super_example/screens/chat/chat_room_edit_dialog.dart';
+import 'package:super_example/screens/user/public_profile.screen.dart';
 import 'package:super_library/custom_code/actions/index.dart';
 import 'package:super_library/custom_code/actions/super_library.dart';
 import 'package:super_library/custom_code/widgets/index.dart';
@@ -113,6 +114,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               Expanded(
                 child: ChatMessageListView(
                   uidOrRoomId: widget.roomId,
+                  onTapProfilePhoto: (uid, displayName, photoUrl) async {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) {
+                        return PublicProfileScreen(
+                          uid: uid,
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
               SafeArea(

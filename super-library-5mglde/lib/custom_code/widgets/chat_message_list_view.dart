@@ -41,7 +41,8 @@ class ChatMessageListView extends StatefulWidget {
 }
 
 class _ChatMessageListViewState extends State<ChatMessageListView> {
-  double get iconSize => 52;
+  /// TODO: make these optional parameters
+  double get iconSize => 40;
   double get iconPadding => 8;
   double get textPadding => 10;
   double get leftRightBubblePadding => 16;
@@ -136,12 +137,13 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                                   ? CrossAxisAlignment.end
                                   : CrossAxisAlignment.start,
                               children: [
-                                if (message.displayName != null)
-                                  Text(
-                                    message.displayName!,
-                                    style:
-                                        FlutterFlowTheme.of(context).labelSmall,
-                                  ),
+                                // TODO: Make the size and color optional
+                                DisplayName(
+                                  uid: message.senderUid,
+                                  fontSize: 12,
+                                  fontColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
                                 Row(
                                   mainAxisAlignment: isMine
                                       ? MainAxisAlignment.end
@@ -166,6 +168,8 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                                       ),
                                       SizedBox(width: iconPadding),
                                     ],
+
+                                    /// Chat message text
                                     if (message.text != null)
                                       Flexible(
                                         child: Container(
@@ -189,13 +193,23 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                                                   const Radius.circular(16),
                                             ),
                                           ),
-                                          child: Text(
-                                            message.text!,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          ),
+                                          child: BlockedUser(
+                                              uid: message.senderUid,
+                                              builder: (re) {
+                                                /// TODO: Make the blocked user message customizable
+                                                return Text(
+                                                  re
+                                                      ? 'Blocked user message'
+                                                      : message.text!,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
+                                                );
+                                              }),
                                         ),
                                       ),
+
+                                    /// Chat message Date & Time
                                     if (isNotMine) ...[
                                       SizedBox(width: iconPadding),
                                       Align(
@@ -215,20 +229,30 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                                     ],
                                   ],
                                 ),
-                                if (message.previewUrl != null) ...[
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    width: 220,
-                                    child: SitePreview(
-                                      data: SitePreviewData(
-                                        url: message.previewUrl,
-                                        title: message.previewTitle,
-                                        description: message.previewDescription,
-                                        imageUrl: message.previewImageUrl,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+
+                                /// Preview of the URL
+                                if (message.previewUrl != null)
+                                  BlockedUser(
+                                      uid: message.senderUid,
+                                      builder: (re) {
+                                        if (re) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 8),
+                                          width: 220,
+                                          child: SitePreview(
+                                            data: SitePreviewData(
+                                              url: message.previewUrl,
+                                              title: message.previewTitle,
+                                              description:
+                                                  message.previewDescription,
+                                              imageUrl: message.previewImageUrl,
+                                            ),
+                                          ),
+                                        );
+                                      }),
                               ],
                             ),
                           ),
