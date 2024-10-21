@@ -47,13 +47,22 @@ class _UserAvatarState extends State<UserAvatar> {
           dog('initialData: ${Memory.get<UserData>(widget.uid)?.toJson()}');
 
           /// Prepare: Get the user's photo URL
-          String url = '';
-          final Map<String, dynamic>? data =
-              Memory.get<UserData>(widget.uid)?.toJson();
-          if (data != null) {
-            url = data[UserData.field.photoUrl] as String;
+          // Memory Cache Key
+          String urlKey = 'photoUrl-${widget.uid}';
+          // photo URL
+          String url = Memory.get<String>(urlKey) ?? '';
+
+          /// If there is no photo URL in memeory cache key, dig into the user
+          /// cache memeory.
+          if (url.isEmpty) {
+            final Map<String, dynamic>? data =
+                Memory.get<UserData>(widget.uid)?.toJson();
+            if (data != null) {
+              url = data[UserData.field.photoUrl] as String;
+            }
           }
 
+          ///
           return Value(
             ref: UserService.instance
                 .databaseUserRef(widget.uid)
@@ -64,6 +73,9 @@ class _UserAvatarState extends State<UserAvatar> {
               if (url == null || url.isEmpty) {
                 return tempAvatar();
               }
+
+              /// Cache the photo url into memeory
+              Memory.set<String>(urlKey, url);
 
               return ClipRRect(
                 borderRadius:

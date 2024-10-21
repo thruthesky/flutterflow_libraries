@@ -104,16 +104,18 @@ class BlockedUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyDoc(builder: (userData) {
-      if (userData == null) {
-        return const SizedBox.shrink();
-      }
+    return MyDoc(
+      builder: (userData) {
+        if (userData == null) {
+          return const SizedBox.shrink();
+        }
 
-      final List<String> blockedUsers =
-          List<String>.from((userData['blockedUsers'] as List?) ?? []);
+        final List<String> blockedUsers =
+            List<String>.from((userData['blockedUsers'] as List?) ?? []);
 
-      return builder(blockedUsers.contains(uid));
-    });
+        return builder(blockedUsers.contains(uid));
+      },
+    );
   }
 }
 

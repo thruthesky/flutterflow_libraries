@@ -54,11 +54,20 @@ class _DisplayNameState extends State<DisplayName> {
           }
 
           dog('initialData: ${Memory.get<UserData>(widget.uid)?.toJson()}');
-          String displayName = '';
-          final Map<String, dynamic>? data =
-              Memory.get<UserData>(widget.uid)?.toJson();
-          if (data != null) {
-            displayName = data[UserData.field.displayName] as String;
+
+          // Prepare: Get the user's display name
+          // Memory Cache Key
+          String displayNameKey = 'displayName-${widget.uid}';
+          String displayName = Memory.get<String>(displayNameKey) ?? '';
+
+          // If there is no display name in memeory cache key, dig into the user
+          // cache memeory.
+          if (displayName.isEmpty) {
+            final Map<String, dynamic>? data =
+                Memory.get<UserData>(widget.uid)?.toJson();
+            if (data != null) {
+              displayName = data[UserData.field.displayName] as String;
+            }
           }
 
           return Value(
@@ -71,7 +80,12 @@ class _DisplayNameState extends State<DisplayName> {
               if (v == null) {
                 return const SizedBox();
               }
+
               String name = v.toString();
+
+              /// Cache the displayName into memeory
+              Memory.set<String>(displayNameKey, name);
+
               if (name.isEmpty) {
                 name = widget.nameIfEmpty ?? '';
               }
