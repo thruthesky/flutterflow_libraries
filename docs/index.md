@@ -14,10 +14,16 @@ We chose Realtime Database support because it is simpler, easier, faster, cheape
 To be clear, the Realtime Database is our choice based on our specific needs. You may have different thoughts on scalability, and that's perfectly fine. We are not saying that Firestore and Supabase are not scalable. They are among the best and highly scalable options available. We just found that the Realtime Database scales better for our apps.
 
 
+## How can I use it in my FlutterFlow project?
+
+Simply add it as a dependency. And read the [best practice document](./best_practice.md).
+
+
+
+
 ## Is it for FlutterFlow only?
 
-Super library is built for FlutterFlow from the ground-up.
-
+No. The Super Library can be used with any Flutter project. While it is built specifically for FlutterFlow, you can use it however you like. The library is available as a package on [pub.dev](https://pub.dev). We recommend forking it and adding it as a dependency in your Flutter project.
 
 
 
