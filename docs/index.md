@@ -3,11 +3,23 @@
 
 ## Why We Built the Super Library
 
-We wanted to build a scalable app, so we created the Super library for our own use.
+Our goal was to create the best and most scalable apps.
 
-### Is FlutterFlow or Firestore Not Scalable?
+FlutterFlow is an excellent tool. It allows you to build apps easily with visual development while supporting custom source coding. This gives you the freedom to build anything on top of your FlutterFlow app.
 
-FlutterFlow supports custom source coding, allowing you to write custom code. However, Firestore is not ideal for a midsize chat app.
+FlutterFlow supports Firestore and Supabase by default. However, for maximum scalability, we prefer something different.
+
+We chose Realtime Database support because it is simpler, easier, faster, cheaper, and ideal for mid-size apps.
+
+To be clear, the Realtime Database is our choice based on our specific needs. You may have different thoughts on scalability, and that's perfectly fine. We are not saying that Firestore and Supabase are not scalable. They are among the best and highly scalable options available. We just found that the Realtime Database scales better for our apps.
+
+
+## Is it for FlutterFlow only?
+
+Super library is built for FlutterFlow from the ground-up.
+
+
+
 
 ### Issues with Firestore
 

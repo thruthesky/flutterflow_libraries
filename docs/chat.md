@@ -323,6 +323,7 @@ Component.openChatRoomListTile = (room) => OpenChatRoomListTileWidget(
 ### Callback functions on ChatMessageListView
 
 - **onTapProfilePhoto**: This callback function be called a user taps on another user's profile photo. The callback will deliver uid, dsiplayName, photoUrl of the other user.
+    - Purpose: Display user public profile screen when the other user's photo is being tapped.
 
 
 
