@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_example/screens/data/data.list.screen.dart';
 import 'package:super_example/screens/data/data.test.screen.dart';
 
 class DataScreen extends StatefulWidget {
@@ -26,6 +27,24 @@ class _DataScreenState extends State<DataScreen> {
               },
             ),
             child: Text("Unit Test"),
+          ),
+          ElevatedButton(
+            onPressed: () => showGeneralDialog(
+              context: context,
+              pageBuilder: (_, __, ___) {
+                return DataListScreen();
+              },
+            ),
+            child: Text("QnA"),
+          ),
+          ElevatedButton(
+            onPressed: () => showGeneralDialog(
+              context: context,
+              pageBuilder: (_, __, ___) {
+                return DataListScreen();
+              },
+            ),
+            child: Text("Discussion"),
           ),
         ],
       ),

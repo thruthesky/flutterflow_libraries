@@ -18,6 +18,18 @@ The `Data` provides default CRUD operations for the Realtime Database:
 With the `Comment`, you can easily build blog or forum community apps. Refer to the `Comment` documentation for more details.
 
 
+## Suggested Use Cases
+
+If you want to build the following features in your apps, `Data` functionality is good;
+
+- Blogs, News, Reminders
+- Forum (Built-in BBS) based community apps
+- Social apps with listing/scrolling activity wall screen
+- Shopping mall apps
+- Any functionality that related in creating and listing articles
+
+
+
 
 ## Installation
 
@@ -45,9 +57,6 @@ To achieve the concept of `SSOT` (Single Source of Truth), we save all data in t
   - By default, the title is limited in `2048` letters and the content is limited in `65536` letters by the security rules. You can change them and add more rules.
 
 
-
-
-
 ### Data Format
 
 - Data in the Realtime Database is stored in JSON format.
@@ -72,13 +81,15 @@ To achieve the concept of `SSOT` (Single Source of Truth), we save all data in t
 ### Fields of a Node
 
 - **uid**: The creator's user ID.
-- **category**: The category of the data, ordered by recent posts.
+- **category**: The category of the data, ordered by recent data(article).
 - **order**: The order of the data.
 - **title**: The title of the data.
 - **content**: The content of the data.
 - **urls**: URLs of photos and files associated with the data.
 - **createdAt**: The creation timestamp.
 - **updatedAt**: The update timestamp.
+- **custom fields**: You can add as much extra fields as you want.
+
 
 Example representation:
 

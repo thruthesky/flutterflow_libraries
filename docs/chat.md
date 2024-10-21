@@ -30,6 +30,7 @@
   - [Testing chat room icon](#testing-chat-room-icon)
 - [Known Issues](#known-issues)
   - [No of Chat room message for blocked user](#no-of-chat-room-message-for-blocked-user)
+  - [Unblock and new message](#unblock-and-new-message)
 
 
 
@@ -359,3 +360,14 @@ ChatRoomIcon(
             - The no of new messages is still 2.
 
 - This is a known issue. But it's not critical. And this may be fixed sometime later.
+
+
+
+## Unblock and new message
+
+
+- When A unblocks B,
+  - The new message of B to A should be delivered.
+
+But as of now, it's not delivered. We will fix it soon.
+
