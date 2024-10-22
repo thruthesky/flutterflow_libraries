@@ -78,11 +78,12 @@ There are extra document reads, such as reading user documents or documents in s
 
 Your app will likely read more documents, such as:
 
+- Sending push notifications. For instance, there are 1,000 user in a grou chat. And a user many have more than one push-tokens. On every chat, you need to read more than 1,000 documents to send push notifications. You have to pay more as your app grows.
 - Listing chat rooms in a "my-chat-room-list" screen
 - Displaying the number of unread messages per chat room
 - Showing the total number of unread messages across all chat rooms
 
-Let's multiply the cost by 2.
+Let's multiply the cost by 2 (maybe by 3).
 
 - **Final Cost**: 
   - USD 9.3 * 2 = USD 18.6 per day

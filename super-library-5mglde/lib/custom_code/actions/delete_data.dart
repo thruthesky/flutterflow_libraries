@@ -9,8 +9,18 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future deleteData(String key) async {
+Future deleteData(
+  String key,
+  Future Function() onDelete,
+  Future Function() onFailure,
+) async {
   // Add your function code here!
 
-  await Data.deleteByKey(key);
+  try {
+    await Data.deleteByKey(key);
+    await onDelete();
+  } catch (e) {
+    print('Error on deleteData($key): $e');
+    await onFailure();
+  }
 }

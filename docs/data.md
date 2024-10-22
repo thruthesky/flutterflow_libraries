@@ -123,7 +123,16 @@ Example representation:
 
 - You may navigate back the screen after the `createData` action.
 
-## Custom design on data list screen
+## List data group by category
+
+- Create a screen named `DataListScreen` to display the list of a data group by category.
+    - Add a required page parameter named `category` with the type of String.
+
+- Add `DataListView` super library widget into the body
+  - Pass the category page parameter to the widget.
+
+
+### Custom design on data list screen
 
 - If you want to customize the design in `DataListView` with your component, you can hook your component into super library.
     - The purpose of the `DataListView` is to display the list of data with a short summary of each data entries. But it's really upto you what information you want to show in your custom design.
@@ -146,6 +155,7 @@ Future hookDataCardComponent() async {
 
 ```
 
+
 ### Display data value in custom design
 
 - Data passed to your component is in JSON. So, you can use the `JSON path` to display what's in the data. For instance
@@ -160,19 +170,61 @@ Future hookDataCardComponent() async {
 
 
 
-- You can add whatever key/value pairs as much as you want.
+- You can add and display whatever key/value pairs as much as you want.
     - Below is an example of showing the custom key/value data.
 
 ![image.png](./images/data_display_custom_data.png)
 
 
-
-### Custom design and actions
+#### Custom design and actions
 
 - If you are customzing design with your own component, you need to implement the behaviour of taps profile photo, title, etc.
 
 
 
+
+
+## Displaying Data Details
+
+You can design the UI/UX based on your specific needs.
+
+To display full details of the data when tapped from the `DataListView` or a custom component, follow these steps:
+
+1. **Create a Screen**: 
+   - Name it `DataViewScreen`.
+   - Add a required page parameter named `data` of the JSON type.
+
+2. **Open DataViewScreen**:
+   - When an item is tapped in the `DataListView`, open `DataViewScreen` with the `data` parameter.
+
+3. **Design DataViewScreen**:
+   - Customize the screen to display the data details.
+   - Consider adding the following buttons:
+     - `like`
+     - `reply`
+     - `chat`
+     - `block`
+     - `report`
+     - `edit`
+     - `delete`
+   - Add a tap action on the user's profile photo to open the user's public profile screen.
+   - Add a tap action to show the original image if displaying thumbnails.
+
+
+
+
+## Data custom actions
+
+### createData
+
+### updateData
+
+### readData
+
+### deleteData
+
+- Returns true if the data has been deleted
+- Returns false if there is an error.
 
 
 

@@ -12,3 +12,14 @@ import 'uploaded_file.dart';
 String endRange(String str) {
   return '$str\uf8ff';
 }
+
+DateTime dateTimeOf(int? timestamp) {
+  if (timestamp == null || timestamp == 0) return DateTime.now();
+  if (timestamp < 0) {
+    throw Exception('Timestamp cannot be negative');
+  }
+  if (timestamp < 10000000000) {
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  }
+  return DateTime.fromMillisecondsSinceEpoch(timestamp);
+}

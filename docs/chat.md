@@ -4,8 +4,10 @@
 - [Chat](#chat)
 - [Chat Logic](#chat-logic)
   - [User Invitation and Consent](#user-invitation-and-consent)
-  - [Chat Room Structure](#chat-room-structure)
+  - [Chat Room Database Structure](#chat-room-database-structure)
+    - [Chat Room Fields](#chat-room-fields)
     - [Example of `users` Field](#example-of-users-field)
+  - [Chat Message Database Structure](#chat-message-database-structure)
   - [How Chat Room Works](#how-chat-room-works)
   - [Sending a chat message](#sending-a-chat-message)
 - [Chat Room](#chat-room)
@@ -41,7 +43,13 @@
 
 We prevent bad users from sending messages to good users.
 
-## Chat Room Structure
+## Chat Room Database Structure
+
+- **/chat/rooms/{room-id}**: Chat room information is being saved in the node.
+
+### Chat Room Fields
+
+- `users`: A map of uid list.
 
 Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys and a boolean as values.
 
@@ -55,6 +63,14 @@ Each chat room has a `users` field, which is a map with user IDs (`uid`) as keys
   }
 }
 ```
+
+
+## Chat Message Database Structure
+
+
+- **/chat/messages/{room-id}/{message-id}**: chat messages are saved under the `/chat/messages/{room-id}` node.
+
+
 
 ## How Chat Room Works
 
