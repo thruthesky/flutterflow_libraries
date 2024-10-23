@@ -5,13 +5,22 @@ To use the Super Library, you need to add initialization code.
 
 ## Why Initialization is Needed
 
-- **Web**: Firebase Realtime Database requires the databaseURL option to run the web applications.
+
+Firebase Realtime Database requires the databaseURL option to run the web applications. If you are running your app in the web debug mode, then you will need the databaseURL setting.
+
+
+If you see an error message of `Exception: SuperLibrary.databaseURL is null`, then, you may suspect that there is something wrong with the databaseURL in web running mode. Refer [Trouble Shooting](./trouble_shooting.md) for more details.
+
+
+
+
+## How to initialize the Super library
+
 
 There are three different cases to set up for the web application.
 
 1. If you are not running your app in the web application, you don't need to init it.
 2. 
-
 
 
 ## Adding initApp Custom Action

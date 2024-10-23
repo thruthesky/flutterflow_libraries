@@ -33,6 +33,7 @@
 - [Known Issues](#known-issues)
   - [No of Chat room message for blocked user](#no-of-chat-room-message-for-blocked-user)
   - [Unblock and new message](#unblock-and-new-message)
+  - [Push notification](#push-notification)
 
 
 
@@ -387,3 +388,9 @@ ChatRoomIcon(
 
 But as of now, it's not delivered. We will fix it soon.
 
+
+
+
+## Push notification
+
+- To know more about how chat send push notification, refer [Push notification](./push_notifications.md) document.

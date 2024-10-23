@@ -1864,10 +1864,6 @@ class SuperLibrary {
   }
 
   FirebaseDatabase get database {
-    if (initialized == false) {
-      throw Exception('SuperLibrary is not initialized');
-    }
-
     /// If it's web, then it requires the databaseURL. For mobile app, it does
     /// not require the databaseURL. The databaseURL is automatically set by
     /// the FlutterFlow framework.
