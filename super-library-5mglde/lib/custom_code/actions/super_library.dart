@@ -1863,6 +1863,10 @@ class SuperLibrary {
     UserService.instance.init();
   }
 
+  /// Returns the firebase database
+  ///
+  /// * It is important to use this method to get the database reference.
+  /// * Do not use `FirebaseDatabase.instance` directly.
   FirebaseDatabase get database {
     /// If it's web, then it requires the databaseURL. For mobile app, it does
     /// not require the databaseURL. The databaseURL is automatically set by
