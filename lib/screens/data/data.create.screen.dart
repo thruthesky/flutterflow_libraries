@@ -49,6 +49,8 @@ class _DataCreateScreenState extends State<DataCreateScreen> {
                   contentController.text,
                   [],
                   {},
+                  null,
+                  null,
                 );
 
                 Navigator.of(context).pop();

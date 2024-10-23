@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:super_example/screens/data/data.list.screen.dart';
 import 'package:super_example/screens/data/data.test.screen.dart';
+import 'package:super_library/custom_code/widgets/index.dart';
 
 class DataScreen extends StatefulWidget {
   static const String routeName = '/Data';
@@ -11,6 +14,7 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
+  dynamic data;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +53,16 @@ class _DataScreenState extends State<DataScreen> {
               },
             ),
             child: Text("Discussion"),
+          ),
+          DataChange(
+            dataKey: 'test',
+            initialData: data,
+            onChange: (v) async {
+              print(v);
+              setState(() {
+                data = v;
+              });
+            },
           ),
         ],
       ),

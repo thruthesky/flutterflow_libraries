@@ -13,7 +13,7 @@ The `Data` provides default CRUD operations for the Realtime Database:
 - **updateData**: Custom action to update data.
 - **deleteData**: Custom action to delete data.
 - **DataListView**: Widget to display a list of values in a data group.
-- **Data**: Widget to display a value of the data.
+- **DataChange**: Widget that calls a callback action when the data changes. It is used to display the changes of the data on the screen.
 
 With the `Comment`, you can easily build blog or forum community apps. Refer to the `Comment` documentation for more details.
 

@@ -125,6 +125,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "data_change.dart": {
+    "old_identifier_name": "DataChange",
+    "new_identifier_name": "DataChange",
+    "type": "W",
+    "is_deleted": false
+  },
   "data_list_view.dart": {
     "old_identifier_name": "DataListView",
     "new_identifier_name": "DataListView",

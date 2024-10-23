@@ -10,3 +10,4 @@ export 'chat_room_icon.dart' show ChatRoomIcon;
 export 'user_display_name.dart' show UserDisplayName;
 export 'display_name.dart' show DisplayName;
 export 'data_list_view.dart' show DataListView;
+export 'data_change.dart' show DataChange;
