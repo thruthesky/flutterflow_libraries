@@ -5,8 +5,14 @@ To use the Super Library, you need to add initialization code.
 
 ## Why Initialization is Needed
 
-- **Web**: Firebase Realtime Database requires additional code for web applications.
-- **Mobile**: Firebase Realtime Database works without extra code on mobile apps.
+- **Web**: Firebase Realtime Database requires the databaseURL option to run the web applications.
+
+There are three different cases to set up for the web application.
+
+1. If you are not running your app in the web application, you don't need to init it.
+2. 
+
+
 
 ## Adding initApp Custom Action
 

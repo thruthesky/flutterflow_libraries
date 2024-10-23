@@ -2,6 +2,9 @@
 
 ## How to install
 
+- Refer the [quick start](./quick_start.md) document to install super library.
+
+
 ## How to display users
 
 ## How to display buttons
