@@ -26,13 +26,22 @@ The cloud functions will send messages by listening to the events of new chat me
 - Deploy
 
 
-### listenToChatMessage
+### pushNotificationOnChatMessage
 
 - Create a new cloud function from your Cloud Functions in FlutterFlow
 - Change the cloud function name as `pushNotificationOnChatMessage`
-- Copy the source code of [super library send push notification](https://raw.githubusercontent.com/thruthesky/super-library-firebase/refs/heads/main/mirror-fcm-tokens/functions/index.js)
+- Copy the source code of [super library send push notification](https://raw.githubusercontent.com/thruthesky/super-library-firebase/refs/heads/main/send-push-notifications/functions/index.js)
 - Replace the source code with the copy
 - Deploy
+
+### pushNotificationOnData
+
+- Do the same as `pushNotificationOnChatMessage` except changing the cloud function name to `pushNotificationOnData`.
+
+### pushNotificationOnComment
+
+- Do the same as `pushNotificationOnChatMessage` except changing the cloud function name to `pushNotificationOnComment`.
+
 
 
 

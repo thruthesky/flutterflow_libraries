@@ -25,4 +25,20 @@ Future<String> createData(
     data: data,
   );
   return ref.key!;
+
+  /*
+    try {
+    final ref = await Data.create(
+      category: category,
+      title: title,
+      content: content,
+      urls: urls,
+      data: data,
+    );
+    await onCreate(ref.key!);
+  } catch (e) {
+    print('Error on createData $e');
+    await onFailure();
+  }
+  */
 }

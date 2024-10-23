@@ -223,8 +223,9 @@ To display full details of the data when tapped from the `DataListView` or a cus
 
 ### deleteData
 
-- Returns true if the data has been deleted
-- Returns false if there is an error.
+- **onDelete**: this callback action will be called if the data has been deleted.
+- **onFailure**: this callback action will be called if the deletion has failed.
+
 
 
 
