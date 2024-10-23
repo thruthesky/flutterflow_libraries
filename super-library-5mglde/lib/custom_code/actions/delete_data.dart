@@ -11,16 +11,16 @@ import '/custom_code/actions/super_library.dart';
 
 Future deleteData(
   String key,
-  Future Function() onDelete,
-  Future Function() onFailure,
+  Future Function()? onDelete,
+  Future Function()? onFailure,
 ) async {
   // Add your function code here!
 
   try {
     await Data.deleteByKey(key);
-    await onDelete();
+    await onDelete?.call();
   } catch (e) {
-    print('Error on deleteData($key): $e');
-    await onFailure();
+    dog('Error on deleteData($key): $e');
+    await onFailure?.call();
   }
 }

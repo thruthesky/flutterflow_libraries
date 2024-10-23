@@ -3,48 +3,33 @@
 
 To use the Super Library, you need to add initialization code.
 
-## Why Initialization is Needed
+## Why Firebase Databsae URL is Needed
 
 
 Firebase Realtime Database requires the databaseURL option to run the web applications. If you are running your app in the web debug mode, then you will need the databaseURL setting.
 
 
-If you see an error message of `Exception: SuperLibrary.databaseURL is null`, then, you may suspect that there is something wrong with the databaseURL in web running mode. Refer [Trouble Shooting](./trouble_shooting.md) for more details.
+If you see an error message of `Exception: SuperLibrary.databaseURL is null` or `Cannot parse firebase url`, then, you may suspect that there is something wrong with the databaseURL in web running mode. Refer [Trouble Shooting](./trouble_shooting.md) for more details.
+
+
+### How to set the databaseURL
+
+
+1. Copy the URL of the Firebase Realtime Database. You can get it from Firebsae console.
+2. Paste the url into the `databaseURL` field in the `View Details` of the Project dependencies setting in FlutterFlow.
+
+If you are running in Mobile device like Simulator, Emulator, or physical device, you don't need to set up the `databaseURL`. The `databaseURL` is set by the FlutterFlow in the `google-service.json` and `GoogleService-Info.plist` files.
 
 
 
+### Adding the databaseURL in the source code
 
-## How to initialize the Super library
-
-
-1. If you are running in Mobile device like Simulator,  not running your app in the web application, you don't need to init it.
-2. 
-
-
-## Adding initApp Custom Action
-
-Add the `initApp` custom action as shown below:
-
-```dart
-import 'package:super_library/custom_code/actions/super_library.dart';
-
-Future initApp() async {
-  SuperLibrary.instance.init(
-    getDatabaseUrl: () => 'https://withcenter-test-4-default-rtdb.firebaseio.com',
-    debug: true,
-  );
-}
-```
-
-If you are using Dev Environment variable, you can initialize it like below;
+If you are building apps with Flutter (Not using FlutterFlow), you can add the databaseURL like below;
 
 ```dart
-  SuperLibrary.instance.init(
-    getDatabaseUrl: () => FFDevEnvironmentValues().databaseURL,
-  );
+SuperLibrary.instance.databaseURL = 'https://xxx-default-rtdb.firebaseio.com';
 ```
 
-Note: The `getDatabaseUrl` function is optional and only required for the web platform. For Android and iOS, the `databaseURL` is set by FlutterFlow in the `google-service.json` and `GoogleService-Info.plist` files.
 
 
 ## Explanation

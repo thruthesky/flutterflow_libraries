@@ -18,5 +18,5 @@ class FFLibraryValues {
   }
 
   String? databaseURL = '';
-  bool? displayDebugLog = false;
+  bool? debugLog = false;
 }

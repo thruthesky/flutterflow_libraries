@@ -9,25 +9,18 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future<String> createData(
+Future createData(
   String category,
   String? title,
   String? content,
   List<String>? urls,
   dynamic data,
+  Future Function(String key)? onCreate,
+  Future Function()? onFailure,
 ) async {
   // Add your function code here!
-  final ref = await Data.create(
-    category: category,
-    title: title,
-    content: content,
-    urls: urls,
-    data: data,
-  );
-  return ref.key!;
 
-  /*
-    try {
+  try {
     final ref = await Data.create(
       category: category,
       title: title,
@@ -35,10 +28,9 @@ Future<String> createData(
       urls: urls,
       data: data,
     );
-    await onCreate(ref.key!);
+    await onCreate?.call(ref.key!);
   } catch (e) {
-    print('Error on createData $e');
-    await onFailure();
+    dog('Error on createData $e');
+    await onFailure?.call();
   }
-  */
 }

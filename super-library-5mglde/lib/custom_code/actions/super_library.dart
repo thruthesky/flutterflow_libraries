@@ -1516,9 +1516,33 @@ class Data {
     List<String>? urls,
     Map<String, dynamic>? data,
   }) async {
-    data ??= {};
+    // data ??= {};
 
-    //
+    // //
+    // data[field.updatedAt] = ServerValue.timestamp;
+
+    // if (category != null) data[field.category] = category;
+    // if (title != null) data[field.title] = title;
+    // if (content != null) data[field.content] = content;
+    // if (urls != null) data[field.urls] = urls;
+
+    // // dog('Data.update() at: ${ref.path} with: $data');
+    // await ref.update(data);
+
+    ///
+    await updateByKey(key, category, title, content, urls, data);
+  }
+
+  /// [deleteByKey] is a method to delete the data from the database by the key.
+  static Future<void> updateByKey(
+    String key,
+    String? category,
+    String? title,
+    String? content,
+    List<String>? urls,
+    Map<String, dynamic>? data,
+  ) async {
+    data ??= {};
     data[field.updatedAt] = ServerValue.timestamp;
 
     if (category != null) data[field.category] = category;
@@ -1527,7 +1551,7 @@ class Data {
     if (urls != null) data[field.urls] = urls;
 
     // dog('Data.update() at: ${ref.path} with: $data');
-    await ref.update(data);
+    await Ref.data.child(key).update(data);
   }
 
   /// [read] is a method to read the data from the database.

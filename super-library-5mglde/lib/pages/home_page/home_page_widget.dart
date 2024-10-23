@@ -113,8 +113,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
                 Text(
                   valueOrDefault<String>(
-                    FFLibraryValues().displayDebugLog?.toString(),
-                    'false',
+                    FFLibraryValues().debugLog?.toString(),
+                    '[false]',
                   ),
                   style: FlutterFlowTheme.of(context).bodyMedium.override(
                         fontFamily: 'Inter',

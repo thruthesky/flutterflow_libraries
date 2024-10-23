@@ -7,20 +7,32 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import '/custom_code/actions/super_library.dart';
+
 Future updateData(
+  String key,
   String? category,
   String? title,
   String? content,
   List<String>? urls,
   dynamic data,
+  Future Function()? onUpdate,
+  Future Function()? onFailure,
 ) async {
   // Add your function code here!
 
-  await data.update(
-    category: category,
-    title: title,
-    content: content,
-    urls: urls,
-    data: data,
-  );
+  try {
+    await Data.updateByKey(
+      key,
+      category,
+      title,
+      content,
+      urls,
+      data,
+    );
+    await onUpdate?.call();
+  } catch (e) {
+    dog('Error on updateData: $e');
+    await onFailure?.call();
+  }
 }
