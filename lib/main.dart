@@ -41,11 +41,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  SuperLibrary.instance.init(
-    getDatabaseUrl: () =>
-        'https://withcenter-test-4-default-rtdb.firebaseio.com',
-    debug: true,
-  );
+  SuperLibrary.instance.databaseURL =
+      'https://withcenter-test-4-default-rtdb.firebaseio.com';
+
+  SuperLibrary.instance.debugLog = true;
 
   UserService.instance.collectionName = 'users';
 

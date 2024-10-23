@@ -101,6 +101,26 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                   ),
                 ),
+                Text(
+                  valueOrDefault<String>(
+                    FFLibraryValues().databaseURL,
+                    '[No value]',
+                  ),
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Inter',
+                        letterSpacing: 0.0,
+                      ),
+                ),
+                Text(
+                  valueOrDefault<String>(
+                    FFLibraryValues().displayDebugLog?.toString(),
+                    'false',
+                  ),
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Inter',
+                        letterSpacing: 0.0,
+                      ),
+                ),
               ],
             ),
           ),

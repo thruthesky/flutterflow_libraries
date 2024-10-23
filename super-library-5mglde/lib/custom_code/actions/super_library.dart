@@ -1299,7 +1299,7 @@ DatabaseReference databaseUserRef(String uid) {
 /// Print log message with emoji 🐶
 void dog(dynamic msg, {int level = 0}) {
   if (kReleaseMode) return;
-  if (SuperLibrary.instance.debug == false) return;
+  if (SuperLibrary.instance.debugLog == false) return;
   log('--> ${msg.toString()}', time: DateTime.now(), name: '🐶', level: level);
 }
 
@@ -1845,44 +1845,36 @@ class SuperLibrary {
   SuperLibrary._();
 
   String? databaseURL;
-  Function? getDatabaseUrl;
   FirebaseDatabase? _database;
 
   bool initialized = false;
 
-  bool debug = false;
-
-  init({
-    Function? getDatabaseUrl,
-    debug = true,
-  }) {
-    this.getDatabaseUrl = getDatabaseUrl ?? () => null;
-    this.debug = debug;
-
-    initialized = true;
-    UserService.instance.init();
-  }
+  bool debugLog = false;
 
   /// Returns the firebase database
   ///
   /// * It is important to use this method to get the database reference.
   /// * Do not use `FirebaseDatabase.instance` directly.
+  ///
+  /// If it's web, then it requires the databaseURL.
+  ///
+  /// For mobile app, the databaseURL is automatically set in the google
+  /// service files by the FlutterFlow framework.
   FirebaseDatabase get database {
-    /// If it's web, then it requires the databaseURL. For mobile app, it does
-    /// not require the databaseURL. The databaseURL is automatically set by
-    /// the FlutterFlow framework.
     if (kIsWeb) {
-      databaseURL ??= getDatabaseUrl?.call();
+      databaseURL ??= FFLibraryValues().databaseURL;
       if (databaseURL == null) {
         throw Exception('SuperLibrary.databaseURL is null');
       }
-    }
-    _database ??= FirebaseDatabase.instanceFor(
-      app: Firebase.app(),
-      databaseURL: databaseURL,
-    );
 
-    return _database!;
+      _database ??= FirebaseDatabase.instanceFor(
+        app: Firebase.app(),
+        databaseURL: databaseURL,
+      );
+
+      return _database!;
+    }
+    return FirebaseDatabase.instance;
   }
 }
 
@@ -2052,7 +2044,11 @@ DatabaseReference userRef(String uid) => databaseUserRef(uid);
 class UserService {
   static UserService? _instance;
   static UserService get instance => _instance ??= UserService._();
-  UserService._();
+  UserService._() {
+    dog('UserService._() began to initialize');
+    _listenAndMirrorUserData();
+    initialized = true;
+  }
 
   /// Firestore collection name for users
   String collectionName = 'users';
@@ -2092,13 +2088,7 @@ class UserService {
   DatabaseReference get databaseUsersRef =>
       database.ref().child(collectionName);
 
-  bool initialized = false;
-
-  init() {
-    dog('UserService.init:');
-    _listenAndMirrorUserData();
-    initialized = true;
-  }
+  late final bool initialized;
 
   /// Firestore document reference for the current user
   fs.DocumentReference get myDoc {

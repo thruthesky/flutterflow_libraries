@@ -17,9 +17,7 @@ If you see an error message of `Exception: SuperLibrary.databaseURL is null`, th
 ## How to initialize the Super library
 
 
-There are three different cases to set up for the web application.
-
-1. If you are not running your app in the web application, you don't need to init it.
+1. If you are running in Mobile device like Simulator,  not running your app in the web application, you don't need to init it.
 2. 
 
 
