@@ -9,9 +9,25 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future<dynamic> readData(String key) async {
+Future<dynamic> readData(
+  BuildContext context,
+  String key,
+) async {
   // Add your function code here!
 
-  final data = await Data.read(key);
-  return data.data;
+  try {
+    final data = await Data.read(key);
+    dog("readData() returns: $data");
+    return data.data;
+  } catch (e) {
+    dog('Error on readData: $e');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error on readData: $e'),
+        ),
+      );
+    }
+    rethrow;
+  }
 }

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '/custom_code/actions/super_library.dart';
 
 Future deleteData(
+  BuildContext context,
   String key,
   Future Function()? onDelete,
   Future Function()? onFailure,

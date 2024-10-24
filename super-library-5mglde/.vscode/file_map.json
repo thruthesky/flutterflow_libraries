@@ -131,6 +131,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "data_list_tile.dart": {
+    "old_identifier_name": "DataListTile",
+    "new_identifier_name": "DataListTile",
+    "type": "W",
+    "is_deleted": false
+  },
   "data_list_view.dart": {
     "old_identifier_name": "DataListView",
     "new_identifier_name": "DataListView",
@@ -161,9 +167,9 @@
     "type": "W",
     "is_deleted": false
   },
-  "user_display_name.dart": {
-    "old_identifier_name": "UserDisplayName",
-    "new_identifier_name": "UserDisplayName",
+  "user_list_tile.dart": {
+    "old_identifier_name": "UserListTile",
+    "new_identifier_name": "UserListTile",
     "type": "W",
     "is_deleted": false
   },

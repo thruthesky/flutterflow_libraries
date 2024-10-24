@@ -134,27 +134,15 @@ Example representation:
 
 ### Custom design on data list screen
 
-- If you want to customize the design in `DataListView` with your component, you can hook your component into super library.
+- If you want to customize the design in `DataListView` with your component.
+  - Simply pass your component to widget builder to the `DataListView` custom widget.
     - The purpose of the `DataListView` is to display the list of data with a short summary of each data entries. But it's really upto you what information you want to show in your custom design.
 - Create a component named `DataListTile` under the `components/data` folder. See below;
 
 ![image.png](./images/data_list_tile_widget_tree.png)
 
-- Add the `data` parameter of `JSON` type to the `DataListTile` component.
-- Then, you need to hook your component into super library by creating a custom action like below;
-
-```dart
-import 'package:super_library_5mglde/custom_code/actions/super_library.dart';
-import '/components/data/data_list_tile/data_list_tile_widget.dart';
-
-Future hookDataCardComponent() async {
-  // Add your function code here!
-  Component.dataListTile = (data) => DataListTileWidget(data: data.data);
-  return;
-}
-
-```
-
+- Add the `data` parameter of `JSON` type to your `DataListTile` component.
+- Then, you need to pass your `DataListTile` widget to the `builder` property.
 
 ### Display data value in custom design
 
@@ -212,6 +200,41 @@ To display full details of the data when tapped from the `DataListView` or a cus
 
 
 
+## Reactivity of the Data
+
+### DataChange widget
+
+The `DataChange` widget listens and rebuild your component whenever the data changes.
+
+For instance, you build a forum app
+
+- To reflect the changes of the title,
+  - Create a component named `PostTitle` with a String `title` parameter.
+    - And display the `title` in the component.
+  - Then, add the `DataChange` widget on your screen(or a component)
+    - Passing the `dataKey` as the data key,
+    - and the `field` as `title`.
+    - Then, add the `PostTitle` component to the `builder` of the `DataChange` widget.
+      - pass the widget builder parameter `data` to `title` parameter of `PostTile` 
+
+
+
+- To reflect the content and other properties of the data,
+  - Create a component named `PostData` with a JSON `data` parameter.
+    - And display the properties of the data by accessing `$.title`, `$.content`, `$.uid`, `$.createdAt`, `$.urls`, and more.
+      - Since the parameter of the `data` is JSON and it has the whole data, you can display whatever you like.
+  - Then, add the `DataChange` widget on yor screen(or a comment)
+    - Passing the `dataKey` as the data key,
+    - and the `field` as null
+    - Then pass the `PostData` to the `builder` of the `DataChange` widget.
+      - Pass the widget builder parameter `data` to the `data` parameter of the  `PostData`.
+
+You can use the `DataChange` to listen for the realtime update of the data.
+
+
+
+
+
 
 ## Data custom actions
 
@@ -220,6 +243,9 @@ To display full details of the data when tapped from the `DataListView` or a cus
 ### updateData
 
 ### readData
+
+- You may use `readData` custom action to read the data on data update screen.
+
 
 ### deleteData
 

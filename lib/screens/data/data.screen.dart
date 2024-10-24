@@ -14,7 +14,6 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
-  dynamic data;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,12 +55,9 @@ class _DataScreenState extends State<DataScreen> {
           ),
           DataChange(
             dataKey: 'test',
-            initialData: data,
-            onChange: (v) async {
-              print(v);
-              setState(() {
-                data = v;
-              });
+            field: 'a',
+            builder: (v) {
+              return Text(v.toString());
             },
           ),
         ],

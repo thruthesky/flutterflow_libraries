@@ -29,6 +29,9 @@ class DataListScreen extends StatelessWidget {
       ),
       body: DataListView(
         category: category,
+        builder: (data) => DataListTile(
+          data: data,
+        ),
       ),
     );
   }

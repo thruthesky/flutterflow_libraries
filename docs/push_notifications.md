@@ -34,9 +34,44 @@ The cloud functions will send messages by listening to the events of new chat me
 - Replace the source code with the copy
 - Deploy
 
+
+#### How FlutterFlow works with chat push notifications
+
+
+- In FlutterFlow, every screen(page) is listening the tap event of the push notification banner. The paths of the push notification handler would be
+  - `main.dart` calls `_router = createRouter(_appStateNotifier);` inside `MyApp`.
+    - `nav.dart` creates FFRoute objects of all the screens(pages) and passes it to `toRouter` as in `.map((r) => r.toRoute(appStateNotifier))`
+      - In `nav.dart`, the `toRoute` wraps the the FFRoute screen object with `GoRouter` and handle the async/await if the screne is Future. And it also handles the parameters of the screen(page)
+        - Then, the `toRoute` passes the screen(of GoRouter) as the child parameter of the `PushNotificationsHandler` widget.
+          - The `PushNotificationsHandler` is a stateful widget that has push notification handler in its initState, and simply returns the child (screen/page) widget.
+            - See? every screen is wrapped by `PushNotificationsHandler` widget that does push notification handling.
+            - Not that, the push notification handler will extract the `initialPageName` and `parameterData` inside the push notification `data` property.
+              - Then, it will open the screen(page) that is identical to `initialPageName` and transform the `parameterData` to pass over the go router's `context.pushNamed(...)` method to pass over the `initialPageName`.
+
+
+
+```js
+const parameterData = { roomId, messageId };
+const initialPageName = "ChatRoomScreen"; // The name of the screen you will open.
+```
+
+
 ### pushNotificationOnData
 
 - Do the same as `pushNotificationOnChatMessage` except changing the cloud function name to `pushNotificationOnData`.
+
+
+#### How FlutterFlow works with data push notifications
+
+- When the user taps on the push notification banner on the system tray, it will open `DataDetailScreen` with the `category` and `dataKey` parameters.
+  - You may not have a screen named `DataDetailScreen`. Instead you may have `PostDetailScreen` and `BlogDetailScreen` for data view screen.
+    - In this case, you need to create a screen named `DataDetailScreen` and when user taps on the push notification banner, the app will open the `DataDetailScreen` with parameters of `category` adn `dataKey`.
+      - Then, look into the `category` parameter and decide to redirect any of the screens of `PostDetailsScreen` or `BlogDetailScreen`, or whatever screen.
+```js
+const parameterData = { category, dataKey };
+const initialPageName = "DataDetailScreen"; // This page will be opened when the user taps on the push notification banner.
+```
+
 
 ### pushNotificationOnComment
 

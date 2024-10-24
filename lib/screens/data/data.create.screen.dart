@@ -44,6 +44,7 @@ class _DataCreateScreenState extends State<DataCreateScreen> {
                 print(contentController.text);
 
                 await createData(
+                  context,
                   widget.category,
                   titleController.text,
                   contentController.text,

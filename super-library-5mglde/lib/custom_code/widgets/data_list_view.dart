@@ -19,6 +19,7 @@ class DataListView extends StatefulWidget {
     required this.category,
     this.onTapProfilePhoto,
     this.onTap,
+    required this.builder,
   });
 
   final double? width;
@@ -28,6 +29,7 @@ class DataListView extends StatefulWidget {
   final Future Function(String uid, String displayName, String photoUrl)?
       onTapProfilePhoto;
   final Future Function(dynamic data)? onTap;
+  final Widget Function(dynamic data) builder;
 
   @override
   State<DataListView> createState() => _DataListViewState();
@@ -51,64 +53,14 @@ class _DataListViewState extends State<DataListView> {
             final DataSnapshot doc = snapshot.docs[index];
             final Data data = Data.fromSnapshot(doc);
 
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => widget.onTap?.call(data.data),
-              child: Component.dataListTile?.call(data) ??
-                  Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () => widget.onTapProfilePhoto?.call(
-                                        data.uid,
-                                        Memory.get<String>(
-                                                'displayName-${data.uid}') ??
-                                            '',
-                                        Memory.get<String>(
-                                                'photoUrl-${data.uid}') ??
-                                            '',
-                                      ),
-                                  child: UserAvatar(uid: data.uid)),
-                              SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  DisplayName(uid: data.uid),
-                                  Text(
-                                    data.title,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            data.content,
-                          ),
-                          SizedBox(height: 16),
-                        ],
-                      ),
-                    ),
-                  ),
-            );
+            return widget.builder(data.data);
+
+            // return widget.builder(data.data);
           },
         );
       },
       emptyBuilder: () => const Center(
-        child: Text('No users found'),
+        child: Text('No data found!'),
       ),
       errorBuilder: (error) => Center(
         child: Text('Error: $error'),

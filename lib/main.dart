@@ -17,10 +17,6 @@ import 'package:super_example/screens/data/data.screen.dart';
 import 'package:super_example/screens/data/data.test.screen.dart';
 import 'package:super_example/screens/site_preview/site_preview.screen.dart';
 import 'package:super_example/screens/user/block_user_list.screen.dart';
-import 'package:super_example/screens/user/custom.user_list_view.screen.dart';
-import 'package:super_example/screens/user/custom_component.user_list_view.screen.dart';
-import 'package:super_example/screens/user/horizontal.custom_component.user_list_view.screen.dart';
-import 'package:super_example/screens/user/horizontal.user_list_view.screen.dart';
 import 'package:super_example/screens/user/profile.screen.dart';
 import 'package:super_example/screens/user/user_list_view.screen.dart';
 import 'package:super_library/custom_code/actions/index.dart';
@@ -307,43 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return const UserListViewScreen();
                                 },
                               ),
-                          child: const Text('Default User List')),
-                      ElevatedButton(
-                          onPressed: () => showGeneralDialog(
-                                context: context,
-                                pageBuilder: (_, __, ___) {
-                                  return const HorizontalUserListViewScreen();
-                                },
-                              ),
-                          child: const Text('Horizontal User List')),
-                      ElevatedButton(
-                          onPressed: () => showGeneralDialog(
-                                context: context,
-                                pageBuilder: (_, __, ___) {
-                                  return const CustomUserListViewScreen();
-                                },
-                              ),
-                          child: const Text('Custom User List')),
-                      ElevatedButton(
-                        onPressed: () => showGeneralDialog(
-                          context: context,
-                          pageBuilder: (_, __, ___) {
-                            return const CustomComponentUserListViewScreen();
-                          },
-                        ),
-                        child:
-                            const Text('Custom Component User List - Vertical'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => showGeneralDialog(
-                          context: context,
-                          pageBuilder: (_, __, ___) {
-                            return const HorizontalCustomComponentUserListViewScreen();
-                          },
-                        ),
-                        child: const Text(
-                            'Custom Component User List - Horizontal'),
-                      ),
+                          child: const Text('User List')),
                     ],
                   ),
                   Text('Unit Tests & Integration Tests'),

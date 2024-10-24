@@ -19,14 +19,14 @@ class UserListView extends StatefulWidget {
     this.height,
     this.horizontalScroll,
     this.reverse,
-    this.onTap,
+    required this.builder,
   });
 
   final double? width;
   final double? height;
   final bool? horizontalScroll;
   final bool? reverse;
-  final Future Function(String userId)? onTap;
+  final Widget Function(dynamic data) builder;
 
   @override
   State<UserListView> createState() => _UserListViewState();
@@ -53,17 +53,7 @@ class _UserListViewState extends State<UserListView> {
             final DataSnapshot doc = snapshot.docs[index];
             final UserData user = UserData.fromSnapshot(doc);
 
-            return Component.userListTile?.call(user) ??
-                ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  leading: UserAvatar(uid: user.uid),
-                  title: Text(user.displayName.or('...')),
-                  subtitle: Text(user.createdAt.toDateTime.short),
-                  onTap: () => widget.onTap?.call(user.uid),
-                );
+            return widget.builder(user.toJson());
           },
         );
       },

@@ -1279,15 +1279,16 @@ class ConfirmDialog extends StatelessWidget {
 }
 
 /// Component holder class.
-class Component {
-  static Widget Function(UserData)? userListTile;
-  static Widget Function(ChatJoin)? chatRoomListTile;
-  static Widget Function(ChatRoom)? openChatRoomListTile;
-  static Widget Function(ChatMessage)? chatMessageListTile;
+/// Note that, the comopoent is not used in this library due to the widget builder
+// class Component {
+//   static Widget Function(UserData)? userListTile;
+//   static Widget Function(ChatJoin)? chatRoomListTile;
+//   static Widget Function(ChatRoom)? openChatRoomListTile;
+//   static Widget Function(ChatMessage)? chatMessageListTile;
 
-  /// dataListTile is for displaying data in the DataListView.
-  static Widget Function(Data)? dataListTile;
-}
+//   /// dataListTile is for displaying data in the DataListView.
+//   static Widget Function(Data)? dataListTile;
+// }
 
 /// User references --------------------------------------------------------------------------------
 /// Database reference for the user with [uid]
@@ -1471,11 +1472,11 @@ class Data {
     return Data(
       key: key,
       uid: data[field.uid] as String,
-      createdAt: data[field.createdAt] as int,
-      updatedAt: data[field.updatedAt] as int,
+      createdAt: data[field.createdAt] ?? 0,
+      updatedAt: data[field.updatedAt] ?? 0,
       category: data[field.category] as String,
-      title: data[field.title] as String,
-      content: data[field.content] as String,
+      title: data[field.title] ?? '',
+      content: data[field.content] ?? '',
       urls: List<String>.from(data[field.urls] ?? []),
       data: {...data, field.key: key},
     );
@@ -1968,6 +1969,7 @@ class UserData {
   ///
   /// Field names used for the Firestore document
   static const field = (
+    uid: 'uid',
     createdAt: 'createdAt',
     displayName: 'displayName',
     displayNameLowerCase: 'displayNameLowerCase',
@@ -1990,6 +1992,7 @@ class UserData {
 
   Map<String, dynamic> toJson() {
     return {
+      field.uid: uid,
       field.createdAt: createdAt,
       field.displayName: displayName,
       field.displayNameLowerCase: displayNameLowerCase,

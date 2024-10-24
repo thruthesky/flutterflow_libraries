@@ -50,69 +50,67 @@ class _OpenChatRoomListViewState extends State<OpenChatRoomListView> {
             final DataSnapshot doc = snapshot.docs[index];
             final room = ChatRoom.fromSnapshot(doc);
 
-            return Component.openChatRoomListTile?.call(room) ??
-                InkWell(
-                  onTap: () async {
-                    if (room.users[myUid] == false) {
-                      final re = await confirm(
-                        context: context,
-                        title: const Text('New chat'),
-                        message:
-                            const Text('Do you want to join this chat room?'),
-                      );
-                      if (re != true) {
-                        return;
-                      }
-                    }
+            return InkWell(
+              onTap: () async {
+                if (room.users[myUid] == false) {
+                  final re = await confirm(
+                    context: context,
+                    title: const Text('New chat'),
+                    message: const Text('Do you want to join this chat room?'),
+                  );
+                  if (re != true) {
+                    return;
+                  }
+                }
 
-                    if (context.mounted) {
-                      widget.onTap?.call(room.id) ??
-                          // * FlutterFlow provides an action(callback) with empty body
-                          // * so, there is less chance that users would see tis toast.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Use [onTap] callback action to open chat room. '
-                                'Or customize your UI/UX to open chat room. '
-                                'Refer to the developer documentation for details.',
-                              ),
-                            ),
-                          );
-                    }
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(room.name),
-                              ],
-                            ),
+                if (context.mounted) {
+                  widget.onTap?.call(room.id) ??
+                      // * FlutterFlow provides an action(callback) with empty body
+                      // * so, there is less chance that users would see tis toast.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Use [onTap] callback action to open chat room. '
+                            'Or customize your UI/UX to open chat room. '
+                            'Refer to the developer documentation for details.',
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Text(
-                                'Users',
-                              ),
-                              Text(
-                                room.users.length.toString(),
-                              ),
-                            ],
+                        ),
+                      );
+                }
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(room.name),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            'Users',
+                          ),
+                          Text(
+                            room.users.length.toString(),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                );
+                ),
+              ),
+            );
           },
         );
       },

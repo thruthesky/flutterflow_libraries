@@ -15,12 +15,18 @@ These cloud functions can be used with any FlutterFlow project, even if you are 
 
 
 
-## Known issues
+## FCM token mirroring
 
 
-### Cannot use the returned data from cloud function call
 
-It's an unfortune that we cannot use the return value from the action call of the flutterflow. I created an [issue - Can not use the return result from the Cloud (callable) functions](https://github.com/FlutterFlow/flutterflow-issues/issues/4541) about it.
+## Creating email/password account
 
-For the meantime until it works, you can create an custom action that uses the return value from the cloud functions.
+https://github.com/thruthesky/super-library-firebase/blob/main/create-email-password-account/functions/index.js
+
+
+## Push notifications
+
+
+
+
 

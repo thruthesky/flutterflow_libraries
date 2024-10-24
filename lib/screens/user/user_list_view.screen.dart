@@ -22,7 +22,6 @@ class UserListViewScreen extends StatefulWidget {
 class _UserListViewScreenState extends State<UserListViewScreen> {
   @override
   Widget build(BuildContext context) {
-    Component.userListTile = null;
     return Scaffold(
       appBar: AppBar(
         title: const Text('UserListView'),
@@ -33,14 +32,16 @@ class _UserListViewScreenState extends State<UserListViewScreen> {
           Expanded(
             child: UserListView(
               reverse: true,
-              onTap: (uid) => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) {
-                  return PublicProfileScreen(
-                    uid: uid,
-                  );
-                },
-              ),
+              builder: (data) {
+                return UserListTile(
+                    data: data,
+                    onTap: (data) => showGeneralDialog(
+                          context: context,
+                          pageBuilder: (_, __, ___) {
+                            return PublicProfileScreen(uid: data['uid']);
+                          },
+                        ));
+              },
             ),
           ),
         ],

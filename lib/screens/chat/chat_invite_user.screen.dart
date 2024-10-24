@@ -20,12 +20,15 @@ class _ChatInviteUserScreenState extends State<ChatInviteUserScreen> {
       ),
       body: UserListView(
         reverse: true,
-        onTap: (uid) async {
-          await inviteChatUser(widget.roomId, uid);
-          if (context.mounted) {
-            Navigator.pop(context);
-          }
-        },
+        builder: (user) => UserListTile(
+          data: user,
+          onTap: (data) async {
+            await inviteChatUser(widget.roomId, data['uid']);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ),
     );
   }
