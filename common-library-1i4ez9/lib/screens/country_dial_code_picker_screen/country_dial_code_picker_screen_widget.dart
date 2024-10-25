@@ -104,53 +104,56 @@ class _CountryDialCodePickerScreenWidgetState
                             ),
                       ),
                     ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
-                      child: FFButtonWidget(
-                        onPressed: () async {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Country: ${getJsonField(
-                                  _model.countryDialCodePickerModel
-                                      .selectedCountry,
-                                  r'''$.name''',
-                                ).toString()} (${getJsonField(
-                                  _model.countryDialCodePickerModel
-                                      .selectedCountry,
-                                  r'''$.dial_code''',
-                                ).toString()})',
-                                style: TextStyle(
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                ),
-                              ),
-                              duration: Duration(milliseconds: 4000),
-                              backgroundColor:
-                                  FlutterFlowTheme.of(context).secondary,
-                            ),
-                          );
-                        },
-                        text: 'Display Chosen Country',
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).primary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
-                                    fontFamily: 'Inter Tight',
-                                    color: Colors.white,
-                                    letterSpacing: 0.0,
+                    if (_model.countryDialCodePickerModel.selectedCountry !=
+                        null)
+                      Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Country: ${getJsonField(
+                                    _model.countryDialCodePickerModel
+                                        .selectedCountry,
+                                    r'''$.name''',
+                                  ).toString()} (${getJsonField(
+                                    _model.countryDialCodePickerModel
+                                        .selectedCountry,
+                                    r'''$.dial_code''',
+                                  ).toString()})',
+                                  style: TextStyle(
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
                                   ),
-                          elevation: 0.0,
-                          borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                duration: Duration(milliseconds: 4000),
+                                backgroundColor:
+                                    FlutterFlowTheme.of(context).secondary,
+                              ),
+                            );
+                          },
+                          text: 'Display Chosen Country',
+                          options: FFButtonOptions(
+                            height: 40.0,
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                16.0, 0.0, 16.0, 0.0),
+                            iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            color: FlutterFlowTheme.of(context).primary,
+                            textStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .override(
+                                  fontFamily: 'Inter Tight',
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                ),
+                            elevation: 0.0,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
