@@ -16,7 +16,7 @@ Future updateData(
   String? title,
   String? content,
   List<String>? urls,
-  dynamic data,
+  dynamic extra,
   Future Function()? onUpdate,
   Future Function()? onFailure,
 ) async {
@@ -29,7 +29,7 @@ Future updateData(
       title,
       content,
       urls,
-      data,
+      extra,
     );
     await onUpdate?.call();
   } catch (e) {

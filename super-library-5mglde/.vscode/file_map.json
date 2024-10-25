@@ -11,9 +11,21 @@
     "type": "A",
     "is_deleted": false
   },
+  "create_comment.dart": {
+    "old_identifier_name": "createComment",
+    "new_identifier_name": "createComment",
+    "type": "A",
+    "is_deleted": false
+  },
   "create_data.dart": {
     "old_identifier_name": "createData",
     "new_identifier_name": "createData",
+    "type": "A",
+    "is_deleted": false
+  },
+  "delete_comment.dart": {
+    "old_identifier_name": "deleteComment",
+    "new_identifier_name": "deleteComment",
     "type": "A",
     "is_deleted": false
   },
@@ -44,6 +56,12 @@
   "leave_chat_room.dart": {
     "old_identifier_name": "leaveChatRoom",
     "new_identifier_name": "leaveChatRoom",
+    "type": "A",
+    "is_deleted": false
+  },
+  "read_comment.dart": {
+    "old_identifier_name": "readComment",
+    "new_identifier_name": "readComment",
     "type": "A",
     "is_deleted": false
   },
@@ -86,6 +104,12 @@
   "update_chat_room.dart": {
     "old_identifier_name": "updateChatRoom",
     "new_identifier_name": "updateChatRoom",
+    "type": "A",
+    "is_deleted": false
+  },
+  "update_comment.dart": {
+    "old_identifier_name": "updateComment",
+    "new_identifier_name": "updateComment",
     "type": "A",
     "is_deleted": false
   },

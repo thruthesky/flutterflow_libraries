@@ -1208,6 +1208,50 @@ class ChatService {
   }
 }
 
+class Comment {
+  static Comment? _instance;
+  static Comment get instance => _instance ??= Comment._();
+  Comment._();
+
+  DatabaseReference get ref => database.ref('comments');
+
+  /// [create] creates a new comment.
+  /// Returns the database reference of the comment.
+  /// [parentKey] is the parentKey of the comment.
+  Future<DatabaseReference> create({
+    required String parentKey,
+    required String text,
+  }) async {
+    final comment = {
+      'text': text,
+      'createdAt': ServerValue.timestamp,
+      'createdBy': myUid,
+    };
+    final ref = this.ref.child(parentKey).push();
+    await ref.set(comment);
+    return ref;
+  }
+
+  /// [read] gets the comment of the comment key
+  read(String commentKey) async {
+    final snapshot = await ref.child(commentKey).get();
+    return snapshot.value;
+  }
+
+  /// [update] updates the comment of the comment key
+  update(String commentKey, String text) async {
+    await ref.child(commentKey).update({
+      'text': text,
+      'updatedAt': ServerValue.timestamp,
+    });
+  }
+
+  /// [delete] deletes the comment of the comment key
+  delete(String commentKey) async {
+    await ref.child(commentKey).remove();
+  }
+}
+
 /// Confirm dialog
 ///
 /// It requires build context.

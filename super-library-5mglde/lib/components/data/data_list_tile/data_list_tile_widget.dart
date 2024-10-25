@@ -16,7 +16,7 @@ class DataListTileWidget extends StatefulWidget {
   });
 
   final dynamic data;
-  final Future Function()? onTap;
+  final Future Function(dynamic data)? onTap;
   final Future Function(String uid)? onTapProfilePhoto;
 
   @override
@@ -62,7 +62,9 @@ class _DataListTileWidgetState extends State<DataListTileWidget> {
         );
       },
       onTap: (data) async {
-        await widget.onTap?.call();
+        await widget.onTap?.call(
+          widget!.data!,
+        );
       },
     );
   }

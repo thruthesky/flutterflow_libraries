@@ -14,3 +14,7 @@ export 'create_data.dart' show createData;
 export 'update_data.dart' show updateData;
 export 'delete_data.dart' show deleteData;
 export 'read_data.dart' show readData;
+export 'create_comment.dart' show createComment;
+export 'update_comment.dart' show updateComment;
+export 'read_comment.dart' show readComment;
+export 'delete_comment.dart' show deleteComment;

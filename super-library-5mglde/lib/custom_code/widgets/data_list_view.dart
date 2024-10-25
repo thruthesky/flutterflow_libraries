@@ -17,8 +17,6 @@ class DataListView extends StatefulWidget {
     this.width,
     this.height,
     required this.category,
-    this.onTapProfilePhoto,
-    this.onTap,
     required this.builder,
   });
 
@@ -26,9 +24,6 @@ class DataListView extends StatefulWidget {
   final double? height;
   final String category;
 
-  final Future Function(String uid, String displayName, String photoUrl)?
-      onTapProfilePhoto;
-  final Future Function(dynamic data)? onTap;
   final Widget Function(dynamic data) builder;
 
   @override

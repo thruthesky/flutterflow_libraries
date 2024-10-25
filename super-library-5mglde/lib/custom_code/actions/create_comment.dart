@@ -9,10 +9,9 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/super_library.dart';
 
-Future createData(
+Future createComment(
   BuildContext context,
-  String category,
-  String? title,
+  String parentKey,
   String? content,
   List<String>? urls,
   dynamic extra,
@@ -21,17 +20,17 @@ Future createData(
 ) async {
   // Add your function code here!
 
-  try {
-    final ref = await Data.create(
-      category: category,
-      title: title,
-      content: content,
-      urls: urls,
-      data: extra,
-    );
-    await onCreate?.call(ref.key!);
-  } catch (e) {
-    dog('Error on createData $e');
-    await onFailure?.call();
-  }
+  // try {
+  //   final ref = await Data.create(
+  //     category: category,
+  //     title: title,
+  //     content: content,
+  //     urls: urls,
+  //     data: data,
+  //   );
+  //   await onCreate?.call(ref.key!);
+  // } catch (e) {
+  //   dog('Error on createData $e');
+  //   await onFailure?.call();
+  // }
 }

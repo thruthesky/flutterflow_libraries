@@ -4,6 +4,33 @@ Imagine you are building a social app that displays users' tweets, photos, and c
 
 Using the Realtime Database is faster, cheaper, and simpler.
 
+
+- [Data](#data)
+  - [Features](#features)
+  - [Suggested Use Cases](#suggested-use-cases)
+  - [Installation](#installation)
+  - [Database Structure](#database-structure)
+    - [Security](#security)
+    - [Data Format](#data-format)
+    - [Example Structure](#example-structure)
+    - [Fields of a Node](#fields-of-a-node)
+  - [Openning data list screen](#openning-data-list-screen)
+  - [Create a data](#create-a-data)
+  - [List data group by category](#list-data-group-by-category)
+    - [Custom design on data list screen](#custom-design-on-data-list-screen)
+    - [Display data value in custom design](#display-data-value-in-custom-design)
+  - [Displaying Data Details](#displaying-data-details)
+  - [Reactivity of the Data](#reactivity-of-the-data)
+    - [DataChange widget](#datachange-widget)
+  - [Data custom actions](#data-custom-actions)
+    - [createData](#createdata)
+    - [updateData](#updatedata)
+    - [readData](#readdata)
+    - [deleteData](#deletedata)
+  - [Developer's guide line](#developers-guide-line)
+    - [To get data of a category in order](#to-get-data-of-a-category-in-order)
+
+
 ## Features
 
 The `Data` provides default CRUD operations for the Realtime Database:
@@ -135,14 +162,10 @@ Example representation:
 ### Custom design on data list screen
 
 - If you want to customize the design in `DataListView` with your component.
-  - Simply pass your component to widget builder to the `DataListView` custom widget.
-    - The purpose of the `DataListView` is to display the list of data with a short summary of each data entries. But it's really upto you what information you want to show in your custom design.
-- Create a component named `DataListTile` under the `components/data` folder. See below;
-
-![image.png](./images/data_list_tile_widget_tree.png)
-
-- Add the `data` parameter of `JSON` type to your `DataListTile` component.
-- Then, you need to pass your `DataListTile` widget to the `builder` property.
+  - Create a component named as `AppDataListTile`. In fact, it can be any name.
+  - Simply pass the `AppDataListTile` to widget builder of the `DataListView` custom widget.
+    - Display the data information in the `AppDataListTile` component. It's really upto you what information you want to show in your custom design.
+    - Add the `data` parameter of `JSON` type to your `AppDataListTile` component.
 
 ### Display data value in custom design
 
@@ -162,11 +185,6 @@ Example representation:
     - Below is an example of showing the custom key/value data.
 
 ![image.png](./images/data_display_custom_data.png)
-
-
-#### Custom design and actions
-
-- If you are customzing design with your own component, you need to implement the behaviour of taps profile photo, title, etc.
 
 
 
