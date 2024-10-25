@@ -155,6 +155,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "push_notification_icon.dart": {
+    "old_identifier_name": "PushNotificationIcon",
+    "new_identifier_name": "PushNotificationIcon",
+    "type": "W",
+    "is_deleted": false
+  },
   "test_widget.dart": {
     "old_identifier_name": "TestWidget",
     "new_identifier_name": "TestWidget",
@@ -176,6 +182,12 @@
   "user_list_view.dart": {
     "old_identifier_name": "UserListView",
     "new_identifier_name": "UserListView",
+    "type": "W",
+    "is_deleted": false
+  },
+  "user_search.dart": {
+    "old_identifier_name": "UserSearch",
+    "new_identifier_name": "UserSearch",
     "type": "W",
     "is_deleted": false
   },

@@ -58,10 +58,20 @@ class _DataListTileState extends State<DataListTile> {
                 children: [
                   GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTap: () => widget.onTapProfilePhoto?.call(
+                      onTap: () =>
+                          widget.onTapProfilePhoto?.call(
                             data.uid,
                             Memory.get<String>('displayName-${data.uid}') ?? '',
                             Memory.get<String>('photoUrl-${data.uid}') ?? '',
+                          ) ??
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Use [onTap] callback action to DataDetailScreen. '
+                                'Or customize your UI/UX to open Data Screen. '
+                                'Refer to the developer documentation for details.',
+                              ),
+                            ),
                           ),
                       child: UserAvatar(uid: data.uid)),
                   SizedBox(width: 16),

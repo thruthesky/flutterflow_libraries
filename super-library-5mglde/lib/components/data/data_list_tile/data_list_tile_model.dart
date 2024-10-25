@@ -7,6 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class DataListTileModel extends FlutterFlowModel<DataListTileWidget> {
+  ///  Local state fields for this component.
+
+  String? fieldTest;
+
   @override
   void initState(BuildContext context) {}
 

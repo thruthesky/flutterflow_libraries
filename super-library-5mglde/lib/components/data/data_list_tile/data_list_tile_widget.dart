@@ -11,9 +11,13 @@ class DataListTileWidget extends StatefulWidget {
   const DataListTileWidget({
     super.key,
     required this.data,
+    required this.onTap,
+    required this.onTapProfilePhoto,
   });
 
   final dynamic data;
+  final Future Function()? onTap;
+  final Future Function(String uid)? onTapProfilePhoto;
 
   @override
   State<DataListTileWidget> createState() => _DataListTileWidgetState();
@@ -50,32 +54,15 @@ class _DataListTileWidgetState extends State<DataListTileWidget> {
       height: 100.0,
       data: widget!.data!,
       onTapProfilePhoto: (uid, displayName, photoUrl) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Profile photo tapped. No action defined. Create your own Component to make it work',
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
-            duration: Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
-          ),
+        await widget.onTapProfilePhoto?.call(
+          getJsonField(
+            widget!.data,
+            r'''$.uid''',
+          ).toString(),
         );
       },
       onTap: (data) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Data card tapped. No action defined. Create your own Component to make it work',
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
-            duration: Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
-          ),
-        );
+        await widget.onTap?.call();
       },
     );
   }

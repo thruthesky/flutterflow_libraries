@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import '/custom_code/actions/super_library.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 /// ChatRoomListView
 ///
@@ -96,7 +97,64 @@ class _ChatRoomListViewState extends State<ChatRoomListView> {
                           uid: ChatService.instance.getOtherUid(join.roomId),
                           width: 60,
                           height: 60,
+                        )
+                      else ...[
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).tertiary,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: !join.iconUrl.isNullOrEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: CachedNetworkImage(
+                                        imageUrl: join.iconUrl!,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.chat,
+                                      size: 18,
+                                    ),
+                            ),
+                            if (!join.photoUrl.isNullOrEmpty)
+                              Positioned(
+                                bottom: -8,
+                                right: -8,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      width: 4,
+                                    ),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: CachedNetworkImage(
+                                      fadeInDuration: Duration.zero,
+                                      imageUrl: join.photoUrl!,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      width: 28,
+                                      height: 28,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              )
+                          ],
                         ),
+                      ],
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(

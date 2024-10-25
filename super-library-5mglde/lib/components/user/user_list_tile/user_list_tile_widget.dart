@@ -11,9 +11,11 @@ class UserListTileWidget extends StatefulWidget {
   const UserListTileWidget({
     super.key,
     this.data,
+    required this.onTap,
   });
 
   final dynamic data;
+  final Future Function(dynamic data)? onTap;
 
   @override
   State<UserListTileWidget> createState() => _UserListTileWidgetState();
@@ -50,20 +52,8 @@ class _UserListTileWidgetState extends State<UserListTileWidget> {
       height: 100.0,
       data: widget!.data!,
       onTap: (data) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'User (${getJsonField(
-                widget!.data,
-                r'''$.uid''',
-              ).toString()} ) has tapped.',
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
-            duration: Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
-          ),
+        await widget.onTap?.call(
+          widget!.data!,
         );
       },
     );
