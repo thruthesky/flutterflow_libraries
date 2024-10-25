@@ -69,6 +69,7 @@ class _UserAvatarState extends State<UserAvatar> {
                 .child(UserData.field.photoUrl),
             initialData: url,
             sync: true,
+            onLoading: tempAvatar(),
             builder: (url, r) {
               if (url == null || url.isEmpty) {
                 return tempAvatar();

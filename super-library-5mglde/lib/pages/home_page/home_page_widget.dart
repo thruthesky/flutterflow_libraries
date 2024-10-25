@@ -64,43 +64,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
-                  child: Material(
-                    color: Colors.transparent,
-                    elevation: 0.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24.0),
-                      child: Container(
-                        width: 100.0,
-                        height: 100.0,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(24.0),
-                          border: Border.all(
-                            color: Color(0xE857636C),
-                            width: 1.6,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text(
-                            'Hello World - Comic Box',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Inter',
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 Text(
                   valueOrDefault<String>(
                     FFLibraryValues().databaseURL,

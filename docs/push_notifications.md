@@ -51,7 +51,7 @@ The cloud functions will send messages by listening to the events of new chat me
 
 
 ```js
-const parameterData = { roomId, messageId };
+const parameterData = JSON.stringify({ roomId, messageId });
 const initialPageName = "ChatRoomScreen"; // The name of the screen you will open.
 ```
 
@@ -68,7 +68,7 @@ const initialPageName = "ChatRoomScreen"; // The name of the screen you will ope
     - In this case, you need to create a screen named `DataDetailScreen` and when user taps on the push notification banner, the app will open the `DataDetailScreen` with parameters of `category` adn `dataKey`.
       - Then, look into the `category` parameter and decide to redirect any of the screens of `PostDetailsScreen` or `BlogDetailScreen`, or whatever screen.
 ```js
-const parameterData = { category, dataKey };
+const parameterData = JSON.stringify({ category, dataKey });
 const initialPageName = "DataDetailScreen"; // This page will be opened when the user taps on the push notification banner.
 ```
 
