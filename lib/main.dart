@@ -127,21 +127,26 @@ class _MyHomePageState extends State<MyHomePage> {
     //   },
     // );
 
+    final data = await Data.read('-O9sbecifMDVM5uBqVmL');
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       enableDrag: false,
       context: context,
       builder: (context) {
+        /*
+        {
+              'key': '-O9sbecifMDVM5uBqVmL',
+              'title': 'This is the title',
+              'uid': 'B3vgtXhd3TSsAp1Tk3XJPkfFGGx2',
+            }
+            */
+
         return GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Padding(
             padding: MediaQuery.viewInsetsOf(context),
-            child: const ReplyForm(data: {
-              'key': 'data-key-1',
-              'title': 'This is the title',
-              'uid': 'B3vgtXhd3TSsAp1Tk3XJPkfFGGx2',
-            }),
+            child: ReplyForm(data: data.data),
           ),
         );
       },

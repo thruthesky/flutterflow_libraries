@@ -38,7 +38,7 @@ class _BlockUserListScreenState extends State<BlockUserListScreen> {
                 final blockedUser = blockedUsers[index];
                 return ListTile(
                   leading: UserAvatar(uid: blockedUser),
-                  title: DisplayName(uid: blockedUser),
+                  title: UserDisplayName(uid: blockedUser),
                   subtitle: Text(blockedUser),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),

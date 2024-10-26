@@ -20,7 +20,7 @@ class _DataDetailScreenState extends State<DataDetailScreen> {
       ),
       body: Column(
         children: [
-          DisplayName(uid: widget.data['uid']),
+          UserDisplayName(uid: widget.data['uid']),
           UserAvatar(uid: widget.data['uid']),
           Text('TITLE: ${widget.data['title']}'),
           Text('TITLE: ${widget.data['content']}'),
@@ -36,7 +36,9 @@ class _DataDetailScreenState extends State<DataDetailScreen> {
                       onTap: () => FocusScope.of(context).unfocus(),
                       child: Padding(
                         padding: MediaQuery.viewInsetsOf(context),
-                        child: ReplyForm(data: widget.data),
+                        child: ReplyForm(
+                            path: 'data/${widget.data['key']}',
+                            data: widget.data),
                       ),
                     );
                   },

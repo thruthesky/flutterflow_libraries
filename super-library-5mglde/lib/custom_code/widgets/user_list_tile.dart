@@ -38,7 +38,7 @@ class _UserListTileState extends State<UserListTile> {
         vertical: 8,
       ),
       leading: UserAvatar(uid: user.uid),
-      title: DisplayName(uid: user.uid, nameIfEmpty: 'Unknown...'),
+      title: UserDisplayName(uid: user.uid, nameIfEmpty: 'Unknown...'),
       subtitle: Text(user.createdAt.toDateTime.short),
       onTap: () => widget.onTap?.call(widget.data),
     );

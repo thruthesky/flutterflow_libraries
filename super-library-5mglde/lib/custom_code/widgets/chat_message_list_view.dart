@@ -137,7 +137,7 @@ class _ChatMessageListViewState extends State<ChatMessageListView> {
                               : CrossAxisAlignment.start,
                           children: [
                             // TODO: Make the size and color optional
-                            DisplayName(
+                            UserDisplayName(
                               uid: message.senderUid,
                               fontSize: 12,
                               fontColor:

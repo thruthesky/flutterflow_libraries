@@ -51,7 +51,7 @@ class _DataListTileState extends State<DataListTile> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DisplayName(uid: widget.data['uid']),
+                  UserDisplayName(uid: widget.data['uid']),
                   Text(
                     widget.data['title'] ?? '',
                     style: Theme.of(context).textTheme.titleLarge,

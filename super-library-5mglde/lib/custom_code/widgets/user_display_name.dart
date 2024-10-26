@@ -18,8 +18,8 @@ import '/custom_code/actions/super_library.dart';
 /// 'Blocked user'. If you want to display nothing, set it to an empty string.
 ///
 /// TODO: Does this widget need to have a initialData parameter?
-class DisplayName extends StatefulWidget {
-  const DisplayName({
+class UserDisplayName extends StatefulWidget {
+  const UserDisplayName({
     super.key,
     this.width,
     this.height,
@@ -39,10 +39,10 @@ class DisplayName extends StatefulWidget {
   final Color? fontColor;
 
   @override
-  State<DisplayName> createState() => _DisplayNameState();
+  State<UserDisplayName> createState() => _UserDisplayNameState();
 }
 
-class _DisplayNameState extends State<DisplayName> {
+class _UserDisplayNameState extends State<UserDisplayName> {
   @override
   Widget build(BuildContext context) {
     return BlockedUser(

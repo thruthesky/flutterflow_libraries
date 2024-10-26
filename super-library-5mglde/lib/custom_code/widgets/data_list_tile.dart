@@ -83,7 +83,7 @@ class _DataListTileState extends State<DataListTile> {
                         data.title,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      DisplayName(
+                      UserDisplayName(
                         uid: data.uid,
                         fontSize: 12,
                       ),

@@ -167,12 +167,6 @@
     "type": "W",
     "is_deleted": false
   },
-  "display_name.dart": {
-    "old_identifier_name": "DisplayName",
-    "new_identifier_name": "DisplayName",
-    "type": "W",
-    "is_deleted": false
-  },
   "open_chat_room_list_view.dart": {
     "old_identifier_name": "OpenChatRoomListView",
     "new_identifier_name": "OpenChatRoomListView",
@@ -200,6 +194,12 @@
   "user_avatar.dart": {
     "old_identifier_name": "UserAvatar",
     "new_identifier_name": "UserAvatar",
+    "type": "W",
+    "is_deleted": false
+  },
+  "user_display_name.dart": {
+    "old_identifier_name": "UserDisplayName",
+    "new_identifier_name": "UserDisplayName",
     "type": "W",
     "is_deleted": false
   },

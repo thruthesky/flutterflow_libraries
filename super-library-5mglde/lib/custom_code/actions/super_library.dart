@@ -1218,10 +1218,14 @@ class Comment {
   /// [key] is the key of the comment data node.
   final String key;
 
-  /// Note that the [root] is a string of the absolute path of the of the data
-  /// node of the realtime database. The reason why it is an absolute path
-  /// is to increment the comment count in the root node. and in any case, if
-  /// it needs to access the root node, it can easily access it.
+  /// [root] is the absoulte path of the root node of the comment.
+  /// It can by anything path in the database.
+  /// It must be string instead of DatabaseReference because it's easier to
+  /// deal with in FlutterFlow. And it must be an absolute path to get the
+  /// commentCount of the root and update.
+  ///
+  /// The [root] can be the data, user, photo id, or any node path in the
+  /// database.
   final String root;
   final String? parentKey;
   final String content;
@@ -1312,7 +1316,7 @@ class Comment {
   ///
   ///
   /// [parentKey] is the parentKey of the comment.
-  Future<DatabaseReference> create({
+  static Future<DatabaseReference> create({
     required String root,
     String? parentKey,
     required String content,
@@ -1350,7 +1354,7 @@ class Comment {
       'order': order,
       'depth': parentKey == null ? 0 : depth,
     };
-    final ref = commentsRef.push();
+    final ref = CommentService.instance.commentsRef.push();
     await ref.set(comment);
 
     /// Increment the comment count of the root.
