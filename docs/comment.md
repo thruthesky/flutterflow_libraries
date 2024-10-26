@@ -4,10 +4,19 @@ The `Comment API` offers a powerful and simple way to add comment feature to you
 
 It offers a complete set of UI/UX widgets and logics for managing comments including but not limited to CRUD, file uploading, likes, and much more.
 
+
+## Overview
+
+- It is best to use the SliverListView as it can get the comments little by little as user scrolls the screen up and down.
+  - We can custom code it but it's not easy to provides a custom ui customization.
+    - Until we find a way, we simply get all comments of the comments of the data and display it in list view.
+
+
 ## Terms
 
 - `Root`: An object that the comments belong to. It can be a user, photo, product item, blog/post, or whatever.
 - `First level comments`: are comments created directly under a Root.
+
 
 
 

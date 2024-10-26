@@ -1209,38 +1209,41 @@ class ChatService {
 }
 
 class Comment {
-  static Comment? _instance;
-  static Comment get instance => _instance ??= Comment._();
-  Comment._();
-
-  DatabaseReference get ref => database.ref('comments');
+  DatabaseReference get commentsRef => CommentService.instance.commentsRef;
+  DatabaseReference commentRef(String id) =>
+      CommentService.instance.commentRef(id);
 
   /// [create] creates a new comment.
   /// Returns the database reference of the comment.
   /// [parentKey] is the parentKey of the comment.
   Future<DatabaseReference> create({
-    required String parentKey,
+    required String rootKey,
+    String? parentKey,
     required String text,
+    List<String>? urls,
   }) async {
     final comment = {
+      'rootKey': rootKey,
+      'parentKey': parentKey,
       'text': text,
+      'urls': urls,
       'createdAt': ServerValue.timestamp,
       'createdBy': myUid,
     };
-    final ref = this.ref.child(parentKey).push();
+    final ref = commentsRef.push();
     await ref.set(comment);
     return ref;
   }
 
   /// [read] gets the comment of the comment key
   read(String commentKey) async {
-    final snapshot = await ref.child(commentKey).get();
+    final snapshot = await commentsRef.child(commentKey).get();
     return snapshot.value;
   }
 
   /// [update] updates the comment of the comment key
   update(String commentKey, String text) async {
-    await ref.child(commentKey).update({
+    await commentsRef.child(commentKey).update({
       'text': text,
       'updatedAt': ServerValue.timestamp,
     });
@@ -1248,7 +1251,36 @@ class Comment {
 
   /// [delete] deletes the comment of the comment key
   delete(String commentKey) async {
-    await ref.child(commentKey).remove();
+    await commentsRef.child(commentKey).remove();
+  }
+}
+
+class CommentService {
+  static CommentService? _instance;
+  static CommentService get instance => _instance ??= CommentService._();
+  CommentService._();
+
+  DatabaseReference get commentsRef => database.ref().child('comments');
+  DatabaseReference commentRef(String id) => commentsRef.child(id);
+
+  /// Get the parents of the comment.
+  ///
+  /// It returns the list of parents in the path to the root from the comment.
+  /// Use this method to get
+  ///   - the parents of the comment. (This case is used by sorting comments and drawing the comment tree)
+  ///   - the users(user uid) in the path to the root. Especially to know who wrote the comment in the path to the post
+  List<Comment> getParents(Comment comment, List<Comment> comments) {
+    final List<Comment> parents = [];
+    Comment? parent = comment;
+    while (parent != null) {
+      parent = comments.firstWhereOrNull(
+        (e) => e.id == parent!.parentId,
+      );
+      if (parent != null) {
+        parents.add(parent);
+      }
+    }
+    return parents.reversed.toList();
   }
 }
 
