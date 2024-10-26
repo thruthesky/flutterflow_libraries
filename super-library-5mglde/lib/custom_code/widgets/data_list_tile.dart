@@ -79,9 +79,13 @@ class _DataListTileState extends State<DataListTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DisplayName(uid: data.uid),
                       Text(
                         data.title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      DisplayName(
+                        uid: data.uid,
+                        fontSize: 12,
                       ),
                     ],
                   ),

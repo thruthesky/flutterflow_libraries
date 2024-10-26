@@ -185,6 +185,12 @@
     "type": "W",
     "is_deleted": false
   },
+  "reply_form.dart": {
+    "old_identifier_name": "ReplyForm",
+    "new_identifier_name": "ReplyForm",
+    "type": "W",
+    "is_deleted": false
+  },
   "test_widget.dart": {
     "old_identifier_name": "TestWidget",
     "new_identifier_name": "TestWidget",

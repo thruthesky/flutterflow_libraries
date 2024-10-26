@@ -10,6 +10,7 @@ It offers a complete set of UI/UX widgets and logics for managing comments inclu
 - It is best to use the SliverListView as it can get the comments little by little as user scrolls the screen up and down.
   - We can custom code it but it's not easy to provides a custom ui customization.
     - Until we find a way, we simply get all comments of the comments of the data and display it in list view.
+  - And if you are building app with Flutter without FlutterFlow, we recommend you to use the SliverListView. And we encourage you to use Flutter (without FlutterFlow) if yo are good at source coding.
 
 
 ## Terms

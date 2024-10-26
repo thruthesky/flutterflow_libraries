@@ -1,6 +1,4 @@
 // Automatic FlutterFlow imports
-import 'package:super_library/flutter_flow/flutter_flow_model.dart';
-
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions

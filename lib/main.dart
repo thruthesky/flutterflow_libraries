@@ -126,6 +126,26 @@ class _MyHomePageState extends State<MyHomePage> {
     //     return DataTestScreen();
     //   },
     // );
+
+    await showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: false,
+      context: context,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Padding(
+            padding: MediaQuery.viewInsetsOf(context),
+            child: const ReplyForm(data: {
+              'key': 'data-key-1',
+              'title': 'This is the title',
+              'uid': 'B3vgtXhd3TSsAp1Tk3XJPkfFGGx2',
+            }),
+          ),
+        );
+      },
+    );
   }
 
   @override

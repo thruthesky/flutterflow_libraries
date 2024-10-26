@@ -14,6 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  easy_storage: ^0.0.19
   flutter:
     sdk: flutter
 
