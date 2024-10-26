@@ -1,4 +1,6 @@
 // Automatic FlutterFlow imports
+import 'package:super_library/flutter_flow/flutter_flow_model.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -15,14 +17,16 @@ import 'dart:developer';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/foundation.dart';
 
+import 'package:collection/collection.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart' hide Text;
@@ -1210,48 +1214,195 @@ class ChatService {
 
 class Comment {
   DatabaseReference get commentsRef => CommentService.instance.commentsRef;
-  DatabaseReference commentRef(String id) =>
-      CommentService.instance.commentRef(id);
+  DatabaseReference commentRef(String key) =>
+      CommentService.instance.commentRef(key);
+
+  /// [key] is the key of the comment data node.
+  final String key;
+
+  /// Note that the [root] is a string of the absolute path of the of the data
+  /// node of the realtime database. The reason why it is an absolute path
+  /// is to increment the comment count in the root node. and in any case, if
+  /// it needs to access the root node, it can easily access it.
+  final String root;
+  final String? parentKey;
+  final String content;
+  final String uid;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<String> urls;
+  final int depth;
+  final String order;
+  final bool deleted;
+
+  ///
+  bool hasChild = false;
+
+  /// Returns true if the comment belongs to the current user.
+  bool get isMine => uid == currentUserUid;
+
+  DatabaseReference get ref => commentRef(key);
+
+  Comment({
+    required this.key,
+    required this.root,
+    required this.parentKey,
+    required this.content,
+    required this.uid,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.urls,
+    required this.depth,
+    required this.order,
+    required this.deleted,
+  });
+
+  factory Comment.fromSnapshot(DataSnapshot snapshot) {
+    if (snapshot.exists == false) {
+      throw 'comment-modeling/comment-not-exist Comment does not exist';
+    }
+
+    final docSnapshot = snapshot.value as Map<String, dynamic>;
+    return Comment.fromJson(docSnapshot, snapshot.key!);
+  }
+
+  factory Comment.fromJson(Map<String, dynamic> json, String key) {
+    return Comment(
+      key: key,
+      root: json['root'],
+      parentKey: json['parentKey'],
+      content: json['content'] ?? '',
+      uid: json['uid'],
+      createdAt: json['createdAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updateAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'])
+          : DateTime.now(),
+      urls: List<String>.from(json['urls'] ?? []),
+      depth: json['depth'] ?? 0,
+      order: json['order'],
+      deleted: json['deleted'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key,
+      'root': root,
+      'parentKey': parentKey,
+      'DatabaseReference': DatabaseReference,
+      'content': content,
+      'uid': uid,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'urls': urls,
+      'depth': depth,
+      'order': order,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Comment(${toJson()})';
+  }
 
   /// [create] creates a new comment.
   /// Returns the database reference of the comment.
+  ///
+  ///
+  ///
+  ///
   /// [parentKey] is the parentKey of the comment.
   Future<DatabaseReference> create({
-    required String rootKey,
+    required String root,
     String? parentKey,
-    required String text,
+    required String content,
     List<String>? urls,
   }) async {
+    /// Get the commentCount of the root.
+    /// * Note that, if the root does not exist, it will create the root node.
+    /// * with the [commentCont] field only.
+
+    final snapshot = await database.ref(root).child('commentCount').get();
+    int commentCount = snapshot.value as int? ?? 0;
+
+    /// Get parent comment to get the depth and order.
+    int depth = 0;
+    String parentOrder = '';
+    if (parentKey != null) {
+      final parent = await read(parentKey);
+      depth = (parent?.depth ?? 0) + 1;
+      parentOrder = parent?.order ?? '';
+    }
+
+    final order = CommentService.instance.getCommentOrderString(
+      depth: depth,
+      noOfComments: commentCount,
+      sortString: parentOrder,
+    );
+
     final comment = {
-      'rootKey': rootKey,
+      'root': root,
       'parentKey': parentKey,
-      'text': text,
+      'content': content,
       'urls': urls,
       'createdAt': ServerValue.timestamp,
-      'createdBy': myUid,
+      'uid': myUid,
+      'order': order,
+      'depth': parentKey == null ? 0 : depth,
     };
     final ref = commentsRef.push();
     await ref.set(comment);
+
+    /// Increment the comment count of the root.
+    await database.ref(root).update({
+      'commentCount': ServerValue.increment(1),
+    });
+
     return ref;
   }
 
   /// [read] gets the comment of the comment key
-  read(String commentKey) async {
-    final snapshot = await commentsRef.child(commentKey).get();
-    return snapshot.value;
+  static Future<Comment?> read(String commentKey) async {
+    final snapshot = await CommentService.instance.commentRef(commentKey).get();
+    if (!snapshot.exists) {
+      return null;
+    }
+    return Comment.fromSnapshot(snapshot);
   }
 
   /// [update] updates the comment of the comment key
-  update(String commentKey, String text) async {
+  ///
+  /// To delete [content], pass an empty string.
+  /// To delete [urls], pass an empty list.
+  Future update({
+    required String commentKey,
+    String? content,
+    List<String>? urls,
+  }) async {
     await commentsRef.child(commentKey).update({
-      'text': text,
+      if (content != null) 'content': content,
+      if (urls != null) 'urls': urls,
       'updatedAt': ServerValue.timestamp,
     });
   }
 
   /// [delete] deletes the comment of the comment key
-  delete(String commentKey) async {
-    await commentsRef.child(commentKey).remove();
+  Future delete() async {
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+    await ref.remove();
+  }
+
+  /// [deleteByKey] is a method to delete the data from the database by the key.
+  static Future<void> deleteByKey(String commentKey) async {
+    final comment = await read(commentKey);
+    if (comment == null) {
+      throw 'comment-delete/comment-not-exist Comment does not exist';
+    }
+    await comment.delete();
   }
 }
 
@@ -1261,26 +1412,88 @@ class CommentService {
   CommentService._();
 
   DatabaseReference get commentsRef => database.ref().child('comments');
-  DatabaseReference commentRef(String id) => commentsRef.child(id);
+  DatabaseReference commentRef(String key) => commentsRef.child(key);
 
-  /// Get the parents of the comment.
+  /// Get the parents of the comment under a root.
   ///
   /// It returns the list of parents in the path to the root from the comment.
   /// Use this method to get
-  ///   - the parents of the comment. (This case is used by sorting comments and drawing the comment tree)
-  ///   - the users(user uid) in the path to the root. Especially to know who wrote the comment in the path to the post
+  ///   - the parents of the comment.
+  ///     (This is the case used by sorting comments and drawing the comment tree)
+  ///   - the users(user uid) in the path to the root.
+  ///     (To get the UIDs of the comment authors in the path to the data to send push notification)
   List<Comment> getParents(Comment comment, List<Comment> comments) {
     final List<Comment> parents = [];
     Comment? parent = comment;
     while (parent != null) {
       parent = comments.firstWhereOrNull(
-        (e) => e.id == parent!.parentId,
+        (e) => e.key == parent!.key,
       );
       if (parent != null) {
         parents.add(parent);
       }
     }
     return parents.reversed.toList();
+  }
+
+  /// getCommentOrderString
+  ///
+  /// Firebase Firestore Database 에서 코멘트의 정렬을 위한 문자열을 생성한다. 코멘트는
+  /// 글에 대한 코멘트이며, 글에 대한 코멘트는 글의 noOfComments 값을 가지고 있다.
+  ///
+  /// 코멘트의 단계에서 형제 코멘트가 하나 생성 될 때, sortString 의 블록 값이 1씩 증가한다.
+  ///
+  /// 맨 첫 번째 코멘트란, 글에 최초로 작성되는 코멘트. 1번째 코멘트. 해당 글에 하나 뿐이다.
+  /// 첫번째 레벨 코멘트란, 글 바로 아래에 작성되는 코멘트로, 부모 코멘트가 없는 코멘트이다. 이 경우 depth=0 이다.
+  ///
+  /// [noOfComments] 는 글의 noOfComments 를 그대로 입력하면 된다.
+  /// 참고, 맨 첫번째 코멘트를 작성할 때는 noOfComments 값을 그냥 0의 값(또는 NULL)을 입력하면 된다.
+  ///
+  /// [sortString] 는 부모 코멘트의 sortString 을 그 대로 입력하면 된다. 첫번째 레벨 코멘트의 경우, 빈 NULL (또는 빈문자열)을 입력하면 된다.
+  ///
+  /// [depth] 는 부모 코멘트의 depth 값 그대로 들어와야 한다.
+  /// 부모 코멘트의 depth 가 3 이면, 3 로 입력되어야 한다. (3 + 1 로 입력하면 안된다.)
+  /// `first level comments` 의 경우, 입력되는 [sortString] 값이 null 또는 빈 문자열이다. 이 경우,
+  /// [depth] 값은 무시되고, 첫번재 블록에 noOfComments 값을 입력한다.
+  /// DB 에 저장 할 때에는 [depth] 값이 0부터 시작된다. 즉, `first level comemnts` 의 depth 는 0인 것이다.
+  /// 그리고 저장 할 때에는 부모  depth 에서 1 증가된 값으로 저장하면 된다.
+  ///
+  ///
+  ///
+  String getCommentOrderString({
+    required int depth,
+    int? noOfComments,
+    String? sortString,
+  }) {
+    /// [maxDepth] 코멘트 레벨 최대 깊이
+    const int maxDepth = 9;
+    noOfComments ??= 0;
+    sortString ??= "";
+    if (sortString.isEmpty) {
+      /// 첫번째 블록을 +1 하는 것이 아니라, DB 액세스를 줄이고자, noOfComments 값을 사용한다.
+      final String firstPart = noOfComments.toString().padLeft(6, '0');
+      return '$firstPart.000000.000000.000000.000000.000000.000000.000000.000000.000000';
+    } else {
+      /// maxDepth 보다 depth 가 크면, maxDepth - 1 로 설정해서, 맨 마지막 블록을 증가시킨다.
+      /// 즉, max depth 를 제한한다.
+      if (depth >= maxDepth) depth = maxDepth - 1;
+
+      List<String> parts = sortString.split('.');
+
+      /// 블록에서, 1씩 증가하는 것이 아니라, noOfComments 값으로 증가한다.
+      /// 이 문제를 해결 하기 위해서는 이전 (형제) 코멘트를 한번 더 DB 에서 읽어야하는 상황이 발생해서,
+      /// DB 액세스를 줄이고자, noOfComments 값을 사용한다.
+      int blockValue = int.parse(parts[depth]);
+      blockValue = noOfComments;
+      parts[depth] = blockValue.toString().padLeft(6, '0');
+
+      /// 아래의 코드는 굳이 필요 없지만, 혹시 모르니 남겨 둔다.
+      for (int i = depth + 1; i < maxDepth; i++) {
+        parts[i] = '000000'; // 하위 depth를 초기화
+      }
+
+      return parts.join('.');
+    }
   }
 }
 
@@ -1655,12 +1868,18 @@ class Data {
   /// [delete] is a method to delete the data from the database.
   Future<void> delete() async {
     dog('Data.delete() at: ${ref.path}');
+
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+
     await ref.remove();
   }
 
   /// [deleteByKey] is a method to delete the data from the database by the key.
   static Future<void> deleteByKey(String key) async {
-    await Ref.data.child(key).remove();
+    final data = await read(key);
+    await data.delete();
   }
 }
 
@@ -1937,6 +2156,57 @@ class SitePreviewData {
     this.imageUrl,
     this.siteName,
   });
+}
+
+class StorageService {
+  static StorageService? _instance;
+  static StorageService get instance => _instance ??= StorageService._();
+
+  ///
+  StorageService._();
+
+  /// Delete the uploaded file from Firebase Storage by the url.
+  ///
+  /// If the url is null or empty, it does nothing.
+  ///
+  /// If the [ref] is set, it will delete the field when the url is deleted.
+  ///
+  /// When the file does not exist in Firebsae Stroage,
+  /// - If the [ref] is null, it will simply returns without firing exception.
+  /// - If the [ref] is set, it will delete the field in the document.
+  ///
+  /// You can use this method especially when the file of the url in Storage is
+  /// deleted already (or not exist). It will not throw an exception and you
+  /// can continue the logic.
+  Future<void> delete(
+    String? url, {
+    DatabaseReference? ref,
+  }) async {
+    if (url == null || url == '') return;
+    final storageRef = FirebaseStorage.instance.refFromURL(url);
+    try {
+      await storageRef.delete();
+    } on FirebaseException catch (e) {
+      /// Oops! The file does not exist in the Firebase Storage.
+      if (e.code == 'object-not-found') {
+        if (ref == null) {
+          /// Return as if the file is deleted.
+          return;
+        }
+      } else {
+        log('Error deleting file on catch(FirebaseException): $url');
+        log(e.toString());
+        rethrow;
+      }
+    } catch (e) {
+      log('Error deleting file on catch(e): $url');
+      log(e.toString());
+    }
+
+    if (ref != null) {
+      await ref.remove();
+    }
+  }
 }
 
 class SuperLibrary {
@@ -2297,8 +2567,9 @@ class UserService {
         // If a field does exist in the firestore, then save it as null in the
         // database. So, it will be removed from the database.
         int stamp;
-        if (data['created_time'] != null && data['created_time'] is Timestamp) {
-          stamp = (data['created_time'] as Timestamp).millisecondsSinceEpoch;
+        if (data['created_time'] != null &&
+            data['created_time'] is fs.Timestamp) {
+          stamp = (data['created_time'] as fs.Timestamp).millisecondsSinceEpoch;
         } else {
           stamp = DateTime.now().millisecondsSinceEpoch;
         }
