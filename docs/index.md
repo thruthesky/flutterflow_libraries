@@ -5,13 +5,29 @@
 
 Our goal was to create the best and most scalable apps.
 
-FlutterFlow is an excellent tool. It allows you to build apps easily with visual development while supporting custom source coding. This gives you the freedom to build anything on top of your FlutterFlow app.
+FlutterFlow is an excellent tool. It allows you to build apps easily with visual development with the backend database of Firestore and Supabase by default.
 
-FlutterFlow supports Firestore and Supabase by default. However, for maximum scalability, we prefer something different.
+However there some hurdles on buidling mid-sized social apps. You will notice that you need to rebuild your app at the moment that your app becomes busy with the full of activities from thousands of users.
 
-We chose Realtime Database support because it is simpler, easier, faster, cheaper, and ideal for mid-size apps.
+If you are building a chat app using Firestore, here are some of the steps involved when a user sends a chat message:
 
-To be clear, the Realtime Database is our choice based on our specific needs. You may have different thoughts on scalability, and that's perfectly fine. We are not saying that Firestore and Supabase are not scalable. They are among the best and highly scalable options available. We just found that the Realtime Database scales better for our apps.
+1. Create a document for the chat message
+2. Read multiple related documents to create the chat message in Security rules.
+3. Create a push message doc.
+4. Read 1 to thosands documents for getting push notification tokens (It depends).
+5. Update the chat room document to mark the read flag for the logged-in user.
+6. Read multiple related documents for security rules to mark the read flag.
+7. Read the chat message document to display it in the chat room.
+8. Read multiple related documents for security rules to display the chat message.
+9. Read multiple related documents to support displaying the chat message, like user information.
+
+There are more read/write operations involved in sending and receiving a chat message. If you want your app to display the number of unread messages per chat room, there will be even more document reads and writes. Each access to Firestore results in additional document reads and writes, which can become costly and slow.
+
+The Super Library is built on the Realtime Database, which not only reduces costs but also provides ultimate speed and performance. Reads and writes are free in the Realtime Database.
+
+We chose Realtime Database because it is simpler, easier, faster, cheaper, and ideal for mid-size apps.
+
+While the Realtime Database may not be the best choice for all scenarios, it is highly recommended for busy chat apps.
 
 
 ## How can I use it in my FlutterFlow project?
