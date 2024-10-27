@@ -15,3 +15,5 @@ export 'user_list_tile.dart' show UserListTile;
 export 'user_search.dart' show UserSearch;
 export 'push_notification_icon.dart' show PushNotificationIcon;
 export 'reply_form.dart' show ReplyForm;
+export 'comment_list_view.dart' show CommentListView;
+export 'comment_list_tile.dart' show CommentListTile;

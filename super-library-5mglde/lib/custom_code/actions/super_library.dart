@@ -52,6 +52,8 @@ String get myUid {
 /// Database reference for the current user
 DatabaseReference get myRef => userRef(myUid);
 
+DatabaseReference dataRef(String k) => Ref.data.child(k);
+
 /// EO Helpers -------------------------------------------------------------------------------------
 
 /// AuthStateChanges
@@ -1218,15 +1220,16 @@ class Comment {
   /// [key] is the key of the comment data node.
   final String key;
 
-  /// [root] is the absoulte path of the root node of the comment.
-  /// It can by anything path in the database.
-  /// It must be string instead of DatabaseReference because it's easier to
-  /// deal with in FlutterFlow. And it must be an absolute path to get the
-  /// commentCount of the root and update.
+  /// Change on Oct 26, 2024 - To reduce the confusion, the it only supports
+  /// the comments of the data. If you want to use it for the comments for the
+  /// user, photo, or any other node, you must use the user's UID or photo key
+  /// as the rootKey. And in the case of using the comments for non-data node,
+  /// the commentCount field will be added to the node of /data/<uid> or
+  /// /data/<photoKey> . So, the app may get the commentCount from the
+  /// /data/<uid>/commentCount or /data/<photoKey>/commentCount.
   ///
-  /// The [root] can be the data, user, photo id, or any node path in the
-  /// database.
-  final String root;
+  /// [rootKey] is the key of the root node of the comment.
+  final String rootKey;
   final String? parentKey;
   final String content;
   final String uid;
@@ -1247,7 +1250,7 @@ class Comment {
 
   Comment({
     required this.key,
-    required this.root,
+    required this.rootKey,
     required this.parentKey,
     required this.content,
     required this.uid,
@@ -1264,14 +1267,14 @@ class Comment {
       throw 'comment-modeling/comment-not-exist Comment does not exist';
     }
 
-    final docSnapshot = snapshot.value as Map<String, dynamic>;
+    final docSnapshot = snapshot.value as Map;
     return Comment.fromJson(docSnapshot, snapshot.key!);
   }
 
-  factory Comment.fromJson(Map<String, dynamic> json, String key) {
+  factory Comment.fromJson(Map<dynamic, dynamic> json, String key) {
     return Comment(
       key: key,
-      root: json['root'],
+      rootKey: json['rootKey'],
       parentKey: json['parentKey'],
       content: json['content'] ?? '',
       uid: json['uid'],
@@ -1291,7 +1294,7 @@ class Comment {
   Map<String, dynamic> toJson() {
     return {
       'key': key,
-      'root': root,
+      'rootKey': rootKey,
       'parentKey': parentKey,
       'DatabaseReference': DatabaseReference,
       'content': content,
@@ -1317,16 +1320,16 @@ class Comment {
   ///
   /// [parentKey] is the parentKey of the comment.
   static Future<DatabaseReference> create({
-    required String root,
+    required String rootKey,
     String? parentKey,
-    required String content,
+    String? content,
     List<String>? urls,
   }) async {
     /// Get the commentCount of the root.
     /// * Note that, if the root does not exist, it will create the root node.
     /// * with the [commentCont] field only.
 
-    final snapshot = await database.ref(root).child('commentCount').get();
+    final snapshot = await dataRef(rootKey).child('commentCount').get();
     int commentCount = snapshot.value as int? ?? 0;
 
     /// Get parent comment to get the depth and order.
@@ -1334,31 +1337,38 @@ class Comment {
     String parentOrder = '';
     if (parentKey != null) {
       final parent = await read(parentKey);
-      depth = (parent?.depth ?? 0) + 1;
+      depth = (parent?.depth ?? 0);
       parentOrder = parent?.order ?? '';
     }
 
     final order = CommentService.instance.getCommentOrderString(
       depth: depth,
       noOfComments: commentCount,
-      sortString: parentOrder,
+      sortString: parentOrder.isEmpty ? '' : parentOrder.split(':')[1],
     );
 
+    final ref = CommentService.instance.commentsRef.push();
+
     final comment = {
-      'root': root,
-      'parentKey': parentKey,
+      'rootKey': rootKey,
+      'parentKey': ref.key,
       'content': content,
       'urls': urls,
       'createdAt': ServerValue.timestamp,
       'uid': myUid,
-      'order': order,
-      'depth': parentKey == null ? 0 : depth,
+      'order': '$rootKey:$order',
+      'depth': (depth + 1),
     };
-    final ref = CommentService.instance.commentsRef.push();
+
+    print('comment path: ${ref.path}');
+    dog('comment: $comment');
+
     await ref.set(comment);
 
+    dog('data path: ${dataRef(rootKey).path}');
+
     /// Increment the comment count of the root.
-    await database.ref(root).update({
+    await dataRef(rootKey).update({
       'commentCount': ServerValue.increment(1),
     });
 
@@ -1457,8 +1467,10 @@ class CommentService {
   /// 부모 코멘트의 depth 가 3 이면, 3 로 입력되어야 한다. (3 + 1 로 입력하면 안된다.)
   /// `first level comments` 의 경우, 입력되는 [sortString] 값이 null 또는 빈 문자열이다. 이 경우,
   /// [depth] 값은 무시되고, 첫번재 블록에 noOfComments 값을 입력한다.
-  /// DB 에 저장 할 때에는 [depth] 값이 0부터 시작된다. 즉, `first level comemnts` 의 depth 는 0인 것이다.
-  /// 그리고 저장 할 때에는 부모  depth 에서 1 증가된 값으로 저장하면 된다.
+  ///
+  /// DB 에 저장 할 때에는 [depth] 값이 1부터 시작된다. 즉, `first level comemnts` 의 depth 는 1인 것이다.
+  /// 그리고 중요한 것은, 저장 할 때에는 부모 depth 에서 1 증가된 값으로 저장하면 된다. 예를 들어, first level comment 는 1을 저장하고,
+  /// 그 아래 부터는 +1을 해서 저장하면 된다.
   ///
   ///
   ///
@@ -1794,7 +1806,7 @@ class Data {
 
     DatabaseReference ref = Ref.data.push();
 
-    // dog('Data.create() at: ${ref.path} with: $data');
+    dog('Data.create() at: ${ref.path} with: $data');
     await ref.set(data);
 
     return ref;
@@ -1852,19 +1864,8 @@ class Data {
     if (snapshot.exists == false) {
       throw SuperLibraryException('data/read', 'Data not found');
     }
-    final value = Map<String, dynamic>.from(snapshot.value as Map);
 
-    return Data(
-      key: key,
-      uid: myUid,
-      createdAt: value[field.createdAt] as int,
-      updatedAt: value[field.updatedAt] as int,
-      category: value[field.category] as String,
-      title: value[field.title] ?? '',
-      content: value[field.content] ?? '',
-      urls: List<String>.from(value[field.urls] ?? []),
-      data: value,
-    );
+    return Data.fromSnapshot(snapshot);
   }
 
   /// [delete] is a method to delete the data from the database.

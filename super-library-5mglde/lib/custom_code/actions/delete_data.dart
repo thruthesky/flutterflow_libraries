@@ -13,7 +13,7 @@ Future deleteData(
   BuildContext context,
   String key,
   Future Function()? onDelete,
-  Future Function()? onFailure,
+  Future Function(String error)? onFailure,
 ) async {
   // Add your function code here!
 
@@ -22,6 +22,6 @@ Future deleteData(
     await onDelete?.call();
   } catch (e) {
     dog('Error on deleteData($key): $e');
-    await onFailure?.call();
+    await onFailure?.call(e.toString());
   }
 }

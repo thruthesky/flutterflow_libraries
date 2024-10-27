@@ -1,5 +1,4 @@
 // Automatic FlutterFlow imports
-
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom widgets
@@ -17,13 +16,11 @@ class ReplyForm extends StatefulWidget {
     super.key,
     this.width,
     this.height,
-    required this.path,
     required this.data,
   });
 
   final double? width;
   final double? height;
-  final String path;
   final dynamic data;
 
   @override
@@ -31,6 +28,7 @@ class ReplyForm extends StatefulWidget {
 }
 
 class _ReplyFormState extends State<ReplyForm> {
+  final contentController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,36 +39,45 @@ class _ReplyFormState extends State<ReplyForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('You are replying to:'),
+            const Text('You are replying to:'),
             const SizedBox(height: 16),
             Row(
               children: [
                 UserAvatar(uid: widget.data['uid']),
                 const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UserDisplayName(uid: widget.data['uid']),
-                    Text(widget.data['title'] ?? '',
-                        style: FlutterFlowTheme.of(context).titleSmall),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      UserDisplayName(uid: widget.data['uid']),
+                      Text(
+                        ((widget.data['title'] as String?) ??
+                                (widget.data['content'] as String?) ??
+                                '')
+                            .cut(64),
+                        style: FlutterFlowTheme.of(context).titleSmall,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             TextFormField(
+              controller: contentController,
               decoration: InputDecoration(
                 labelText: 'Type reply',
                 hintText: 'Type your reply here...',
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.black,
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.black,
                     width: 1,
                   ),
@@ -84,18 +91,18 @@ class _ReplyFormState extends State<ReplyForm> {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   OutlinedButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.black,
                         width: 1,
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                     ),
                   ),
@@ -103,14 +110,26 @@ class _ReplyFormState extends State<ReplyForm> {
                     padding: const EdgeInsets.only(left: 8),
                     child: ElevatedButton(
                       onPressed: () async {
-                        await Comment.create(
-                          root: widget.data,
-                          content: 'Reply content',
+                        print(widget.data);
+                        await createComment(
+                          context,
+                          widget.data,
+                          contentController.text,
+                          [],
+                          {},
+                          (ref) async => null,
+                          (e) async =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Failed to create comment: $e',
+                              ),
+                            ),
+                          ),
                         );
-
                         Navigator.pop(context);
                       },
-                      child: Text(
+                      child: const Text(
                         'Reply',
                       ),
                     ),

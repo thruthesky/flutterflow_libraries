@@ -24,17 +24,17 @@ class _DataCreateScreenState extends State<DataCreateScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            Text("Create Post in ${widget.category}"),
+            Text('Create Post in ${widget.category}'),
             TextField(
               controller: titleController,
-              decoration: InputDecoration(
-                labelText: "Title",
+              decoration: const InputDecoration(
+                labelText: 'Title',
               ),
             ),
             TextField(
               controller: contentController,
-              decoration: InputDecoration(
-                labelText: "Content",
+              decoration: const InputDecoration(
+                labelText: 'Content',
               ),
               maxLines: 5,
             ),
@@ -50,13 +50,16 @@ class _DataCreateScreenState extends State<DataCreateScreen> {
                   contentController.text,
                   [],
                   {},
-                  null,
-                  null,
+                  (dataKey) async {
+                    print('Data created with key: $dataKey');
+                    Navigator.of(context).pop();
+                  },
+                  (e) async {
+                    print('Failed to create data: $e');
+                  },
                 );
-
-                Navigator.of(context).pop();
               },
-              child: Text("Submit"),
+              child: const Text('Submit'),
             ),
           ],
         ),

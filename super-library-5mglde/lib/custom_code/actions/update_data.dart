@@ -18,7 +18,7 @@ Future updateData(
   List<String>? urls,
   dynamic extra,
   Future Function()? onUpdate,
-  Future Function()? onFailure,
+  Future Function(String error)? onFailure,
 ) async {
   // Add your function code here!
 
@@ -34,6 +34,6 @@ Future updateData(
     await onUpdate?.call();
   } catch (e) {
     dog('Error on updateData: $e');
-    await onFailure?.call();
+    await onFailure?.call(e.toString());
   }
 }

@@ -34,7 +34,7 @@ class _DataListTileState extends State<DataListTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 12,
         left: 24,
         right: 24,
@@ -47,7 +47,7 @@ class _DataListTileState extends State<DataListTile> {
           Row(
             children: [
               UserAvatar(uid: widget.data['uid']),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -60,7 +60,7 @@ class _DataListTileState extends State<DataListTile> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             widget.data.toString(),
           ),
@@ -68,23 +68,23 @@ class _DataListTileState extends State<DataListTile> {
             children: [
               TextButton(
                 onPressed: () {},
-                child: Text('Like'),
+                child: const Text('Like'),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text('Reply'),
+                child: const Text('Reply'),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text('Chat'),
+                child: const Text('Chat'),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text('Block'),
+                child: const Text('Block'),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text('Report'),
+                child: const Text('Report'),
               ),
             ],
           ),

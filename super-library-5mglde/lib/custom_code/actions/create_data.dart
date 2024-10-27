@@ -17,7 +17,7 @@ Future createData(
   List<String>? urls,
   dynamic extra,
   Future Function(String key)? onCreate,
-  Future Function()? onFailure,
+  Future Function(String error)? onFailure,
 ) async {
   // Add your function code here!
 
@@ -32,6 +32,6 @@ Future createData(
     await onCreate?.call(ref.key!);
   } catch (e) {
     dog('Error on createData $e');
-    await onFailure?.call();
+    await onFailure?.call(e.toString());
   }
 }

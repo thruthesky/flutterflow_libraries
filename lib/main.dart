@@ -113,44 +113,25 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Timer(Duration(milliseconds: 100), test);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Timer(const Duration(milliseconds: 100), test);
     });
   }
 
   /// Write test code here
   void test() async {
-    // showGeneralDialog(
-    //   context: context,
-    //   pageBuilder: (_, __, ___) {
-    //     return DataTestScreen();
-    //   },
-    // );
+    final rp =
+        await Data.create(category: 'test', title: 'title', content: 'content');
 
-    final data = await Data.read('-O9sbecifMDVM5uBqVmL');
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      enableDrag: false,
-      context: context,
-      builder: (context) {
-        /*
-        {
-              'key': '-O9sbecifMDVM5uBqVmL',
-              'title': 'This is the title',
-              'uid': 'B3vgtXhd3TSsAp1Tk3XJPkfFGGx2',
-            }
-            */
+    final p = await Data.read(rp.key!);
 
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: MediaQuery.viewInsetsOf(context),
-            child: ReplyForm(data: data.data),
-          ),
-        );
-      },
-    );
+    final rc1 = await Comment.create(rootKey: p.key, content: 'c1');
+    final c1 = await Comment.read(rc1.key!);
+
+    final rc2 = await Comment.create(rootKey: p.key, content: 'c2');
+    final c2 = await Comment.read(rc2.key!);
+
+    print(c2);
   }
 
   @override
@@ -312,8 +293,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                         onPressed: () => showGeneralDialog(
                             context: context,
-                            pageBuilder: (_, __, ___) => BlockUserListScreen()),
-                        child: Text("Blocked Users"),
+                            pageBuilder: (_, __, ___) =>
+                                const BlockUserListScreen()),
+                        child: const Text('Blocked Users'),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -331,8 +313,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: const Text('User List')),
                     ],
                   ),
-                  Text('Unit Tests & Integration Tests'),
-                  Divider(),
+                  const Text('Unit Tests & Integration Tests'),
+                  const Divider(),
                   Wrap(
                     children: [
                       ElevatedButton(
@@ -378,14 +360,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Text('Chat, '),
                       Text('New Messages: '),
                       ChatNewMessageCounter(),
                     ],
                   ),
-                  Divider(),
+                  const Divider(),
                   Wrap(
                     alignment: WrapAlignment.center,
                     children: [
@@ -409,8 +391,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  Text('Data, Comment & Relations'),
-                  Divider(),
+                  const Text('Data, Comment & Relations'),
+                  const Divider(),
                   Wrap(
                     children: [
                       ElevatedButton(
@@ -418,16 +400,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           showGeneralDialog(
                             context: context,
                             pageBuilder: (_, __, ___) {
-                              return DataScreen();
+                              return const DataScreen();
                             },
                           );
                         },
-                        child: Text('Data'),
+                        child: const Text('Data'),
                       ),
                     ],
                   ),
-                  Text('ETC'),
-                  Divider(),
+                  const Text('ETC'),
+                  const Divider(),
                   Wrap(
                     children: [
                       ElevatedButton(
@@ -449,17 +431,17 @@ class _MyHomePageState extends State<MyHomePage> {
                               },
                             );
                           },
-                          child: Text('Site Preview')),
+                          child: const Text('Site Preview')),
                       ElevatedButton(
                           onPressed: () async {
-                            final String url = 'https://www.google.com';
+                            const String url = 'https://www.google.com';
                             if (await canLaunchUrl(Uri.parse(url))) {
                               await launchUrl(Uri.parse(url));
                             } else {
                               print('Could not launch $url');
                             }
                           },
-                          child: Text('Launch a URL')),
+                          child: const Text('Launch a URL')),
                     ],
                   )
                 ],

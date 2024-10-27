@@ -149,6 +149,18 @@
     "type": "W",
     "is_deleted": false
   },
+  "comment_list_tile.dart": {
+    "old_identifier_name": "CommentListTile",
+    "new_identifier_name": "CommentListTile",
+    "type": "W",
+    "is_deleted": false
+  },
+  "comment_list_view.dart": {
+    "old_identifier_name": "CommentListView",
+    "new_identifier_name": "CommentListView",
+    "type": "W",
+    "is_deleted": false
+  },
   "data_change.dart": {
     "old_identifier_name": "DataChange",
     "new_identifier_name": "DataChange",
