@@ -1,28 +1,30 @@
+import '/components/user/user_list_tile/user_list_tile_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/widgets/index.dart' as custom_widgets;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'home_page_model.dart';
-export 'home_page_model.dart';
+import 'home_screen_model.dart';
+export 'home_screen_model.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({super.key});
+class HomeScreenWidget extends StatefulWidget {
+  const HomeScreenWidget({super.key});
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
+  State<HomeScreenWidget> createState() => _HomeScreenWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
-  late HomePageModel _model;
+class _HomeScreenWidgetState extends State<HomeScreenWidget> {
+  late HomeScreenModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => HomePageModel());
+    _model = createModel(context, () => HomeScreenModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -83,6 +85,37 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         fontFamily: 'Inter',
                         letterSpacing: 0.0,
                       ),
+                ),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: custom_widgets.UserListView(
+                      width: double.infinity,
+                      height: double.infinity,
+                      horizontalScroll: false,
+                      reverse: false,
+                      builder: (dynamic data) => UserListTileWidget(
+                        data: data,
+                        onTap: (data) async {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '...',
+                                style: TextStyle(
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryText,
+                                ),
+                              ),
+                              duration: Duration(milliseconds: 4000),
+                              backgroundColor:
+                                  FlutterFlowTheme.of(context).secondary,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

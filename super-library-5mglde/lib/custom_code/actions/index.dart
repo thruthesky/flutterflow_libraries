@@ -18,3 +18,4 @@ export 'create_comment.dart' show createComment;
 export 'update_comment.dart' show updateComment;
 export 'read_comment.dart' show readComment;
 export 'delete_comment.dart' show deleteComment;
+export 'initialize_firebase.dart' show initializeFirebase;

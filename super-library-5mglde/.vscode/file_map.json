@@ -41,6 +41,12 @@
     "type": "A",
     "is_deleted": false
   },
+  "initialize_firebase.dart": {
+    "old_identifier_name": "initializeFirebase",
+    "new_identifier_name": "initializeFirebase",
+    "type": "A",
+    "is_deleted": false
+  },
   "invite_chat_user.dart": {
     "old_identifier_name": "inviteChatUser",
     "new_identifier_name": "inviteChatUser",
